@@ -7,27 +7,13 @@ Chair::Chair()
 
 Chair::~Chair()
 {
-	Chair::base = 0;
-	Chair::vbo = 0;
-	Chair::cbo = 0;
-	Chair::vLocation = 0;
-	Chair::cLocation = 0;
-	Chair::u_projLocation = 0;
-	Chair::u_modelMatrix = 0;
 	scaleFactor = 0;
 }
 
-void Chair::init(Box* b, uint* vbo, uint* cbo, uint* vLocation, uint* cLocation, uint* u_projLocation, uint* u_modelMatrix, uint* u_lightLocation)
+void Chair::init(Box* b)
 {
 	base = b;
 	base->setWorld(Matrix(1.0f));
-	Chair::vbo = vbo;
-	Chair::cbo = cbo;
-	Chair::vLocation = vLocation;
-	Chair::cLocation = cLocation;
-	Chair::u_projLocation = u_projLocation;
-	Chair::u_modelMatrix = u_modelMatrix;
-	Chair::u_lightLocation = u_lightLocation;
 	
 	scaleFactor = 0.25;
 }

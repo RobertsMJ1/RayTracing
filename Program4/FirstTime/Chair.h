@@ -23,7 +23,7 @@ public:
 	Chair();
 	~Chair();
 
-	void init(Box* b, uint* vbo, uint* cbo, uint* vLocation, uint* cLocation, uint* u_projLocation, uint* u_modelMatrix, uint* u_lightLocation);
+	void init(Box* b);
 	virtual void draw(Vec4 color = BLUE);
 	float getHeight(){return scaleFactor;}
 

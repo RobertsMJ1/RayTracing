@@ -8,7 +8,7 @@
 
 #include "SceneGraph.h"
 
-SceneGraph::SceneGraph(Box* g, int x, int z)
+SceneGraph::SceneGraph(Geometry* g, int x, int z)
 {
 	geometry = g;
 	width = x;
@@ -27,7 +27,7 @@ SceneGraph::SceneGraph(Box* g, int x, int z)
 	g->setScaleY(scaleY);
 }
 
-SceneGraph::SceneGraph(Box* g, int x, int z, float tx, float ty, float tz, float ry, float sx, float sy, float sz)
+SceneGraph::SceneGraph(Geometry* g, int x, int z, float tx, float ty, float tz, float ry, float sx, float sy, float sz)
 {
 	geometry = g;
 	width = x;

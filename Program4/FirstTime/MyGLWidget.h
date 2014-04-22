@@ -37,7 +37,7 @@ public:
 
 	//helper function to read shader source and put it in a char array
 	//thanks to Swiftless.com
-	char* textFileRead(const char*);
+	//char* textFileRead(const char*);
 
 	//some other helper functions
 	void printLinkInfoLog(int);
@@ -68,7 +68,6 @@ private:
 
 	unsigned int vbo, cbo, ibo, nbo;
 	unsigned int vLocation, cLocation, nLocation;
-
 	unsigned int u_projLocation, u_modelMatrix, u_lightLocation;
 
 	Box box;

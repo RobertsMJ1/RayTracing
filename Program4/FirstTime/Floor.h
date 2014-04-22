@@ -22,7 +22,7 @@ public:
 	Floor(void);
 	~Floor(void);
 
-	void init(Box* b, uint* vbo, uint* cbo, uint* vLocation, uint* cLocation, uint* u_projLocation, uint* u_modelMatrix, uint* u_lightLocation);
+	void init(Box* b);
 	virtual void draw(Vec4 color = GREEN);
 	float getHeight(){return scaleFactor;}
 	
@@ -30,5 +30,6 @@ public:
 	Matrix transform(float tX = 0, float tY = 0, float tZ = 0, float theta = 0, float sX=1, float sY=1, float sZ=1);
 private:
 	Box* base;
+	float scaleFactor;
 };
 

@@ -20,13 +20,13 @@ using std::vector;
 #include <list>
 using std::list;
 
-#include "Box.h"
+#include "Geometry.h"
 
 class SceneGraph
 {
 public:
-	SceneGraph(Box* g, int x, int z);
-	SceneGraph(Box* g, int x, int z, float tx, float ty, float tz, float ry, float sx, float sy, float sz);
+	SceneGraph(Geometry* g, int x, int z);
+	SceneGraph(Geometry* g, int x, int z, float tx, float ty, float tz, float ry, float sx, float sy, float sz);
 	~SceneGraph(void);
 	//The scene graph is a rough wrapper to contain the root and the rest of the tree.
 	//Node* root;
@@ -49,11 +49,11 @@ public:
 	void setScaleY(float s){scaleY = s;}
 	void setScaleZ(float s){scaleZ = s;}
 
-	void setGeometry(Box* b){geometry = b;}
+	void setGeometry(Geometry* b){geometry = b;}
 #pragma endregion
 
 private:
-	Box* geometry;
+	Geometry* geometry;
 	SceneGraph** children;
 	int width, depth;
 

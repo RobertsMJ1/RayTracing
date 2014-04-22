@@ -13,13 +13,15 @@ using std::string;
 #include <vector>
 using std::vector;
 
-class Mesh: public Box
+#include "Geometry.h"
+
+class Mesh: public Geometry
 {
 public:
 	Mesh(void);
 	~Mesh(void);
 
-	void init(uint* vbo, uint* cbo, uint* vLocation, uint* cLocation, uint* u_projLocation, uint* u_modelMatrix, uint* u_lightLocation, uint* ibo, uint* nbo, uint* nLocation);
+	void init();
 	virtual void draw(Vec4 color = YELLOW);
 	
 	virtual float getHeight(){return 0;}
@@ -47,10 +49,18 @@ private:
 	float disp;
 
 	vector<Vec4> points;
-	vector<uint> indices;
+	vector<unsigned int> indices;
 	vector<Vec4> normals;
 
 	ifstream fin;
 	bool inited;
+
+	unsigned int vertexShader;
+	unsigned int fragmentShader;
+	unsigned int shaderProgram;
+
+	unsigned int vbo, cbo, ibo, nbo;
+	unsigned int vLocation, cLocation, nLocation;
+	unsigned int u_projLocation, u_modelMatrix, u_lightLocation;
 };
 

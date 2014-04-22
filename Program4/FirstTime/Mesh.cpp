@@ -19,19 +19,37 @@ Mesh::~Mesh(void)
 {
 }
 
-void Mesh::init(uint* vbo, uint* cbo, uint* vLocation, uint* cLocation, uint* u_projLocation, uint* u_modelMatrix, uint* u_lightLocation, uint* ibo, uint* nbo, uint* nLocation)
+void Mesh::init()
 {
-	Mesh::vbo = vbo;
-	Mesh::cbo = cbo;
-	Mesh::vLocation = vLocation;
-	Mesh::cLocation = cLocation;
-	Mesh::u_projLocation = u_projLocation;
-	Mesh::u_modelMatrix = u_modelMatrix;
-	Mesh::ibo = ibo;
-	Mesh::nbo = nbo;
-	Mesh::nLocation = nLocation;
-	Mesh::u_lightLocation = u_lightLocation;
-	
+	glGenBuffers(1, &vbo);
+	glGenBuffers(1, &cbo);
+	glGenBuffers(1, &ibo);
+	glGenBuffers(1, &nbo);
+
+	vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	shaderProgram = glCreateProgram();
+
+	const char* vertexSource = textFileRead("lambert.vert");
+	const char* fragmentSource = textFileRead("lambert.frag");
+	glShaderSource(vertexShader, 1, &vertexSource, 0);
+	glShaderSource(fragmentShader, 1, &fragmentSource, 0);
+	glCompileShader(vertexShader);
+	glCompileShader(fragmentShader);
+
+	glAttachShader(shaderProgram, vertexShader);
+	glAttachShader(shaderProgram, fragmentShader);
+	glLinkProgram(shaderProgram);
+
+	vLocation = glGetAttribLocation(shaderProgram, "vs_position");
+	cLocation = glGetAttribLocation(shaderProgram, "vs_color");
+	nLocation = glGetAttribLocation(shaderProgram, "vs_normal");
+	u_projLocation = glGetUniformLocation(shaderProgram, "u_projMatrix");
+	u_modelMatrix = glGetUniformLocation(shaderProgram, "u_modelMatrix");
+	u_lightLocation = glGetUniformLocation(shaderProgram, "u_lightPos");
+
+	glUseProgram(shaderProgram);
+
 	float dump;
 	
 	//if(fname == "") return;
@@ -81,25 +99,7 @@ void Mesh::init(uint* vbo, uint* cbo, uint* vLocation, uint* cLocation, uint* u_
 		revCalcNormals();
 	}
 
-	Vec4* pts = new Vec4[points.size()];
-	for(int i=0; i<points.size(); i++) pts[i] = points[i];
-	glBindBuffer(GL_ARRAY_BUFFER, *vbo);
-	glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(glm::vec4), pts, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(*vLocation);
-	glVertexAttribPointer(*vLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);
-
-	Vec4* norm = new Vec4[normals.size()];
-	for(int i=0; i<normals.size(); i++) norm[i] = normals[i];
-	glBindBuffer(GL_ARRAY_BUFFER, *nbo);
-	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec4), norm, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(*nLocation);
-	glVertexAttribPointer(*nLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);
-
-	uint* ind = new unsigned int[indices.size()];
-	for(int i=0; i<indices.size(); i++)ind[i] = indices[i];
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint), ind, GL_STATIC_DRAW);
-	size = indices.size();
+	
 	inited = true;
 }
 
@@ -110,29 +110,32 @@ void Mesh::draw(Vec4 color)
 	{
 		colors[i] = color;
 	}
-	//glm::vec4 colors[24] = {
-	//	//Front
-	//	color,color,color,color,
-	//	//Back 
-	//	color,color,color,color,
-	//	//Left
-	//	color,color,color,color,
-	//	//Right
-	//	color,color,color,color,
-	//	//Bottom
-	//	color,color,color,color,
-	//	//Top
-	//	color,color,color,color
-	//};
+	Vec4* pts = new Vec4[points.size()];
+	for(int i=0; i<points.size(); i++) pts[i] = points[i];
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(glm::vec4), pts, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(vLocation);
+	glVertexAttribPointer(vLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
-	//world = world * ;
+	Vec4* norm = new Vec4[normals.size()];
+	for(int i=0; i<normals.size(); i++) norm[i] = normals[i];
+	glBindBuffer(GL_ARRAY_BUFFER, nbo);
+	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec4), norm, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(nLocation);
+	glVertexAttribPointer(nLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, *cbo);
+	uint* ind = new unsigned int[indices.size()];
+	for(int i=0; i<indices.size(); i++)ind[i] = indices[i];
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint), ind, GL_STATIC_DRAW);
+	size = indices.size();
+
+	glBindBuffer(GL_ARRAY_BUFFER, cbo);
 	glBufferData(GL_ARRAY_BUFFER, size * sizeof(glm::vec4), colors, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(*cLocation);
-	glVertexAttribPointer(*cLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(cLocation);
+	glVertexAttribPointer(cLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glUniformMatrix4fv(*u_modelMatrix, 1, GL_FALSE, &world[0][0]);
+	glUniformMatrix4fv(u_modelMatrix, 1, GL_FALSE, &world[0][0]);
 	
 	glDrawElements(GL_TRIANGLES, size, GL_UNSIGNED_INT, 0);
 }

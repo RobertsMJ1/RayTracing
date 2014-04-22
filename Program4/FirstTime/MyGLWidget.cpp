@@ -65,17 +65,18 @@ void MyGLWidget::initializeGL() {
 
 	glUseProgram(shaderProgram);
 
-	//poly.init(&vbo, &cbo, &vLocation, &cLocation, &u_projLocation, &u_modelMatrix, &u_lightLocation, &ibo, &nbo, &nLocation);
-
-	box.init(&vbo, &cbo, &vLocation, &cLocation, &u_projLocation, &u_modelMatrix, &u_lightLocation, &ibo, &nbo, &nLocation);
-	chair.init(&box, &vbo, &cbo, &vLocation, &cLocation, &u_projLocation, &u_modelMatrix, &u_lightLocation);
-	table.init(&box, &vbo, &cbo, &vLocation, &cLocation, &u_projLocation, &u_modelMatrix, &u_lightLocation);
-	floor.init(&box, &vbo, &cbo, &vLocation, &cLocation, &u_projLocation, &u_modelMatrix, &u_lightLocation);
-	lBox.init(&vbo, &cbo, &vLocation, &cLocation, &u_projLocation, &u_modelMatrix, &u_lightLocation, &ibo, &nbo, &nLocation);
+	box.init();
+	poly.init();
+	chair.init(&box);
+	table.init(&box);
+	floor.init(&box);
+	//chair.init(&box, &vbo, &cbo, &vLocation, &cLocation, &u_projLocation, &u_modelMatrix, &u_lightLocation);
+	//table.init(&box, &vbo, &cbo, &vLocation, &cLocation, &u_projLocation, &u_modelMatrix, &u_lightLocation);
+	//floor.init(&box, &vbo, &cbo, &vLocation, &cLocation, &u_projLocation, &u_modelMatrix, &u_lightLocation);
+	//lBox.init(&vbo, &cbo, &vLocation, &cLocation, &u_projLocation, &u_modelMatrix, &u_lightLocation, &ibo, &nbo, &nLocation);
 
 	/*****************************************Here*****************************************************/
 	processInput("testScene.txt");
-	//processInput("scene1.txt");
 	/**************************************************************************************************/
 }
 
@@ -94,16 +95,21 @@ void MyGLWidget::paintGL() {
 	//Vec4 l4(light, 1);
 	//l4 = camera * l4;
 	//light = Vec3(l4);
-
-	glm::vec4 l = camera * Vec4(light, 1.0f);
+	glm::vec4 l(1, 1, 1, 1);
+	l = camera * l;
+	//glm::vec4 l = camera * Vec4(light, 1.0f);
 	glUniform4fv(u_lightLocation, 1, &l[0]);
+
+	
+	box.setWorld(camera);
+	box.draw();
+	poly.setWorld(camera);
+	poly.draw();
+	chair.setWorld(camera);
+	chair.draw();
+	
 	root->traverse(camera);
-	//poly.setWorld(camera);
 
-	//poly.draw();
-
-	//lBox.setWorld(glm::translate(Matrix(1.0f), Vec3(light.x, light.y, light.z)) * glm::scale(Matrix(1.0f), Vec3(0.5, 0.5, 0.5)));
-	//lBox.draw(WHITE);
 	glFlush();
 }
 
@@ -116,28 +122,28 @@ void MyGLWidget::resizeGL(int width, int height) {
 	glUniformMatrix4fv(u_projLocation, 1, GL_FALSE, &projection[0][0]);
 }
 
-//from swiftless.com
-char* MyGLWidget::textFileRead(const char* fileName) {
-    char* text;
-    
-    if (fileName != NULL) {
-        FILE *file = fopen(fileName, "rt");
-        
-        if (file != NULL) {
-            fseek(file, 0, SEEK_END);
-            int count = ftell(file);
-            rewind(file);
-            
-            if (count > 0) {
-                text = (char*)malloc(sizeof(char) * (count + 1));
-                count = fread(text, sizeof(char), count, file);
-                text[count] = '\0';	//cap off the string with a terminal symbol, fixed by Cory
-            }
-            fclose(file);
-        }
-    }
-    return text;
-}
+////from swiftless.com
+//char* MyGLWidget::textFileRead(const char* fileName) {
+//    char* text;
+//    
+//    if (fileName != NULL) {
+//        FILE *file = fopen(fileName, "rt");
+//        
+//        if (file != NULL) {
+//            fseek(file, 0, SEEK_END);
+//            int count = ftell(file);
+//            rewind(file);
+//            
+//            if (count > 0) {
+//                text = (char*)malloc(sizeof(char) * (count + 1));
+//                count = fread(text, sizeof(char), count, file);
+//                text[count] = '\0';	//cap off the string with a terminal symbol, fixed by Cory
+//            }
+//            fclose(file);
+//        }
+//    }
+//    return text;
+//}
 
 void MyGLWidget::printLinkInfoLog(int prog) 
 {
@@ -281,6 +287,6 @@ void MyGLWidget::mz()
 void MyGLWidget::loadFile(QString filename)
 {
 	//processInput(filename.toStdString());
-	poly.init(&vbo, &cbo, &vLocation, &cLocation, &u_projLocation, &u_modelMatrix, &u_lightLocation, &ibo, &nbo, &nLocation);
+	poly.init();
 	repaint();
 }
