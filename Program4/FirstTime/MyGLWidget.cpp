@@ -98,7 +98,7 @@ void MyGLWidget::paintGL() {
 	//Vec4 l4(light, 1);
 	//l4 = camera * l4;
 	//light = Vec3(l4);
-	glm::vec4 l(1, 1, 1, 1);
+	glm::vec4 l(light, 1);
 	l = camera * l;
 	//glm::vec4 l = camera * Vec4(light, 1.0f);
 	glUniform4fv(u_lightLocation, 1, &l[0]);

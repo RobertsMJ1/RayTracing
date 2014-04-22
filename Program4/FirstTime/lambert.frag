@@ -20,7 +20,7 @@ void main() {
 	vec3 v = normalize(fs_eye);
 	vec3 h = normalize(l+v);
 	float ndoth = dot(fs_normal, h);
-	float i = pow(clamp(ndoth, 0, 1), 2);
+	float i = pow(clamp(ndoth, 0, 1), 16);
 	
 	//TODO: replace above out_Color with below once the diffuse term works.
     out_Color = i * specColor + diffuseTerm * diffuseColor + ambientContrib;
