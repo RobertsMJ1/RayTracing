@@ -17,8 +17,6 @@
 
 #include "Geometry.h"
 
-#include "constants.h"
-
 class Box : public Geometry
 {
 public:

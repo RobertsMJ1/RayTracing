@@ -15,7 +15,6 @@
 #include "../glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "constants.h"
 #include "Box.h"
 
 class Chair : public Box {
@@ -25,7 +24,7 @@ public:
 
 	void init(Box* b);
 	virtual void draw(Vec4 color = BLUE);
-	float getHeight(){return scaleFactor;}
+	float getHeight(){return 2*scaleFactor;}
 
 	Matrix transform(float tX = 0, float tY = 0, float tZ = 0, float theta = 0, float sX=1, float sY=1, float sZ=1);
 private:

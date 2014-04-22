@@ -14,6 +14,7 @@
 
 const float PI = 3.14159265358979323f;
 
-
+#define VERTEX_SHADER "lambert.vert"
+#define FRAGMENT_SHADER "lambert.frag"
 
 #endif

@@ -31,8 +31,8 @@ void Box::init()
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	shaderProgram = glCreateProgram();
 
-	const char* vertexSource = textFileRead("lambert.vert");
-	const char* fragmentSource = textFileRead("lambert.frag");
+	const char* vertexSource = textFileRead(VERTEX_SHADER);
+	const char* fragmentSource = textFileRead(FRAGMENT_SHADER);
 	glShaderSource(vertexShader, 1, &vertexSource, 0);
 	glShaderSource(fragmentShader, 1, &fragmentSource, 0);
 	glCompileShader(vertexShader);

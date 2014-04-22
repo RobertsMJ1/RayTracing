@@ -15,7 +15,6 @@
 #include "../glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "constants.h"
 #include "Box.h"
 
 class Table : public Box{

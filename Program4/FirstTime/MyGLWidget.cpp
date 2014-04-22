@@ -45,8 +45,8 @@ void MyGLWidget::initializeGL() {
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	shaderProgram = glCreateProgram();
 
-	const char* vertexSource = textFileRead("lambert.vert");
-	const char* fragmentSource = textFileRead("lambert.frag");
+	const char* vertexSource = textFileRead(VERTEX_SHADER);
+	const char* fragmentSource = textFileRead(FRAGMENT_SHADER);
 	glShaderSource(vertexShader, 1, &vertexSource, 0);
 	glShaderSource(fragmentShader, 1, &fragmentSource, 0);
 	glCompileShader(vertexShader);
@@ -62,6 +62,7 @@ void MyGLWidget::initializeGL() {
 	u_projLocation = glGetUniformLocation(shaderProgram, "u_projMatrix");
 	u_modelMatrix = glGetUniformLocation(shaderProgram, "u_modelMatrix");
 	u_lightLocation = glGetUniformLocation(shaderProgram, "u_lightPos");
+	u_eyeLocation = glGetUniformLocation(shaderProgram, "u_eye");
 
 	glUseProgram(shaderProgram);
 
@@ -84,6 +85,8 @@ void MyGLWidget::paintGL() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glColor3f(1.0f, 1.0f, 1.0f);
 
+	if( mTheta < -90 + 0.01f)	mTheta = -90 + 0.01f;
+	if( mTheta > 90 - 0.01f)	mTheta = 90 - 0.01f;
 	Matrix rotX = rotate(Matrix(1.0f), mTheta, Vec3(1, 0, 0));
 	Matrix rotY = rotate(Matrix(1.0f), mPhi, Vec3(0, 1, 0));
 
@@ -99,8 +102,8 @@ void MyGLWidget::paintGL() {
 	l = camera * l;
 	//glm::vec4 l = camera * Vec4(light, 1.0f);
 	glUniform4fv(u_lightLocation, 1, &l[0]);
+	glUniform4fv(u_eyeLocation, 1, &mEyePos[0]);
 
-	
 	box.setWorld(camera);
 	box.draw();
 	poly.setWorld(camera);
@@ -235,11 +238,11 @@ void MyGLWidget::down() {
 	repaint();
 }
 void MyGLWidget::left() {
-	mPhi += 5.0f;
+	mPhi -= 5.0f;
 	repaint();
 }
 void MyGLWidget::right() {
-	mPhi -= 5.0f;   
+	mPhi += 5.0f;   
 	repaint();
 }
 

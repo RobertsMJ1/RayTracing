@@ -89,6 +89,9 @@
     <ClCompile Include="Geometry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Line.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="firsttime.qrc">
@@ -135,14 +138,11 @@
     <ClInclude Include="Geometry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Line.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="color_xforms.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="color_xforms.vert">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="lambert.frag">
       <Filter>Resource Files</Filter>
     </None>

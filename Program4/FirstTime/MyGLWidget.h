@@ -68,7 +68,7 @@ private:
 
 	unsigned int vbo, cbo, ibo, nbo;
 	unsigned int vLocation, cLocation, nLocation;
-	unsigned int u_projLocation, u_modelMatrix, u_lightLocation;
+	unsigned int u_projLocation, u_modelMatrix, u_lightLocation, u_eyeLocation;
 
 	Box box;
 	Chair chair;

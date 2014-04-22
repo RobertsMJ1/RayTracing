@@ -30,8 +30,8 @@ void Mesh::init()
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	shaderProgram = glCreateProgram();
 
-	const char* vertexSource = textFileRead("lambert.vert");
-	const char* fragmentSource = textFileRead("lambert.frag");
+	const char* vertexSource = textFileRead(VERTEX_SHADER);
+	const char* fragmentSource = textFileRead(FRAGMENT_SHADER);
 	glShaderSource(vertexShader, 1, &vertexSource, 0);
 	glShaderSource(fragmentShader, 1, &fragmentSource, 0);
 	glCompileShader(vertexShader);
@@ -319,7 +319,7 @@ void Mesh::revGetIndices()
 
 void Mesh::revCalcNormals()
 {
-	for(int i=0; i<indices.size()-2; i+=3)
+	for(int i=0; i<indices.size()-3; i+=3)
 	{
 		Vec4 n = points[indices[i+2]] - points[indices[i]];
 		Vec4 u = points[indices[i+1]] - points[indices[i]];
