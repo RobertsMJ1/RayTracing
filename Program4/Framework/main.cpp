@@ -1,10 +1,10 @@
-#include "Program1.h"
+#include "framework.h"
 #include <QtWidgets/QApplication>
 
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
-	FirstTime w;
+	Framework w;
 	w.show();
 	return a.exec();
 }

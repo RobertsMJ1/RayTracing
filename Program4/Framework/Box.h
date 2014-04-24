@@ -1,7 +1,13 @@
-#ifndef LINE_H
-#define LINE_H
+/* 
+	Author: Mitch Roberts 
+	Course: COMP 361, Computer Graphics 
+	Date: March 17, 2014 
+	Description: Box class, base of all other box-based objects
+*/ 
+#ifndef BOX_H
+#define BOX_H
 
-//#include <QGLWidget>
+#pragma once
 #define GLEW_STATIC
 #include "glew.h"
 #include <QGLWidget>
@@ -12,18 +18,21 @@
 
 #include "Geometry.h"
 
-class Line : public Geometry
+class Box : public Geometry
 {
 public:
-	Line();
-	~Line();
+	Box();
+	~Box();
 
-	void init();
+	virtual void init();
 	virtual void draw(Vec4 color = YELLOW);
-	virtual float getHeight(){return 0;}
+	virtual float getHeight(){return 1;}
 
 private:
-	Vec4 points[2];
+	Vec4 points[24];
+	unsigned int indices[36];
+	Vec4 normals[24];
+	float edge;
 
 	unsigned int vertexShader;
 	unsigned int fragmentShader;
@@ -33,4 +42,5 @@ private:
 	unsigned int vLocation, cLocation, nLocation;
 	unsigned int u_projLocation, u_modelMatrix, u_lightLocation;
 };
+
 #endif
