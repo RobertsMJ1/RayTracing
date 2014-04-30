@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Framework", "Framework\Framework.vcxproj", "{941B0215-65CD-4CC8-B0D9-B41F6AFF6633}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Program4", "Framework\Framework.vcxproj", "{941B0215-65CD-4CC8-B0D9-B41F6AFF6633}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,5 +16,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		Qt5Version = $(DefaultQtVersion)
 	EndGlobalSection
 EndGlobal

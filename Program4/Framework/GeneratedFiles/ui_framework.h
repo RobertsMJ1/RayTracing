@@ -65,9 +65,10 @@ public:
         verticalSlider = new QSlider(centralWidget);
         verticalSlider->setObjectName(QStringLiteral("verticalSlider"));
         verticalSlider->setGeometry(QRect(610, 10, 31, 151));
-        verticalSlider->setMinimum(-100);
-        verticalSlider->setMaximum(50);
+        verticalSlider->setMinimum(-200);
+        verticalSlider->setMaximum(-1);
         verticalSlider->setSingleStep(1);
+        verticalSlider->setValue(-50);
         verticalSlider->setOrientation(Qt::Vertical);
         horizontalSlider = new QSlider(centralWidget);
         horizontalSlider->setObjectName(QStringLiteral("horizontalSlider"));

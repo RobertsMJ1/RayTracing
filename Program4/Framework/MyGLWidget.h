@@ -69,13 +69,13 @@ public:
 	void buildProcGeometry();
 
 	void processInput(string fname);
-
+	/*
 	vector<vec3> pointsVector;
 	vector<vec3> colorsVector;
 	vector<vec3> normalsVector;
 	vector<unsigned int> indicesVector;
 	vector<Face*> faces;
-
+	*/
 	vector<Mesh*> meshVec;
 
 public slots:

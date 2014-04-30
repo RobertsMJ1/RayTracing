@@ -19,6 +19,9 @@ MyGLWidget::~MyGLWidget() {
 	glDeleteShader(vertexShader);
 	glDeleteProgram(shaderProgram);
 	glDeleteBuffers(1, &vbo);
+	glDeleteBuffers(1, &nbo);
+	glDeleteBuffers(1, &cbo);
+	glDeleteBuffers(1, &ibo);
 }
 
 void MyGLWidget::initializeGL() {
@@ -103,16 +106,18 @@ void MyGLWidget::initializeGL() {
 	chair.init(&box);
 	table.init(&box);
 	floor.init(&box);
+	lBox.init();
 	//chair.init(&box, &vbo, &cbo, &vLocation, &cLocation, &u_projLocation, &u_modelMatrix, &u_lightLocation);
 	//table.init(&box, &vbo, &cbo, &vLocation, &cLocation, &u_projLocation, &u_modelMatrix, &u_lightLocation);
 	//floor.init(&box, &vbo, &cbo, &vLocation, &cLocation, &u_projLocation, &u_modelMatrix, &u_lightLocation);
 	//lBox.init(&vbo, &cbo, &vLocation, &cLocation, &u_projLocation, &u_modelMatrix, &u_lightLocation, &ibo, &nbo, &nLocation);
 
 	/*****************************************Here*****************************************************/
-	processInput("testScene.txt");
+	processInput("config.txt");
 	/**************************************************************************************************/
 	//Initial camera positioning
 	pitchValue = 40;
+	zoomValue = -50;
 
 }
 
@@ -145,13 +150,13 @@ void MyGLWidget::paintGL() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glColor3f(1.0f, 1.0f, 1.0f);
 
-	matrix rotX = glm::rotate(matrix(1.0f), yawValue, vec3(1, 0, 0));
-	matrix rotY = glm::rotate(matrix(1.0f), pitchValue, vec3(0, 1, 0));
+	matrix rotX = glm::rotate(matrix(1.0f), pitchValue, vec3(1, 0, 0));
+	matrix rotY = glm::rotate(matrix(1.0f), yawValue, vec3(0, 1, 0));
 
-	mEyePos = rotY * rotX * vec4(0, 0, zoomValue, 1);
+	mEyePos = rotY * rotX * vec4(0, 0, -zoomValue, 1);
 	mUp = rotY * rotX * vec4(0, 1, 0, 0);
 
-	camera = glm::lookAt(vec3(mEyePos), vec3(0, 0, 0), vec3(0, 1, 0));
+	camera = glm::lookAt(vec3(mEyePos.x, mEyePos.y, mEyePos.z), vec3(0, 0, 0), vec3(mUp.x, mUp.y, mUp.z));
 
 	//Vec4 l4(light, 1);
 	//l4 = camera * l4;
@@ -163,12 +168,16 @@ void MyGLWidget::paintGL() {
 	glUniform4fv(u_eyeLocation, 1, &mEyePos[0]);
 
 	box.setWorld(camera);
-	box.draw();
+	//box.draw();
 	chair.setWorld(camera);
-	chair.draw();
-	
+	//chair.draw();
+	table.setWorld(camera);
+	//table.draw();
+	floor.setWorld(camera);
+	//floor.draw();
+	lBox.setWorld(camera);
 	root->traverse(camera);
-
+	update();
 	glFlush();
 }
 
@@ -207,7 +216,7 @@ char* MyGLWidget::textFileRead(const char* fileName) {
 }
 
 void MyGLWidget::zoom(int x) {
-	zoomValue = -x/10.0f;
+	zoomValue = (-x/10.0f)-1;
 }
 
 void MyGLWidget::pitch(int x) {
