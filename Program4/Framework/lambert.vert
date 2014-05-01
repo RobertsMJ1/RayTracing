@@ -19,11 +19,10 @@ void main() {
 	fs_normal = normalize((u_modelMatrix * vs_normal).xyz);
 	
 	//TODO: Calculate a normal vector pointing from the vertex to the light source
-	fs_light = normalize((u_lightPos - u_modelMatrix * vs_position).xyz);
+	fs_light = normalize((u_lightPos - (u_modelMatrix * vs_position)).xyz);
 	//Normal vector from vertex to the eye
-	fs_eye = normalize((u_eye - u_modelMatrix * vs_position).xyz);
+	fs_eye = normalize((u_eye - (u_modelMatrix * vs_position)).xyz);
 	
-
     //built-in things to pass down the pipeline
     gl_Position = u_projMatrix * u_modelMatrix * vs_position;
 }

@@ -122,31 +122,6 @@ void MyGLWidget::initializeGL() {
 }
 
 void MyGLWidget::paintGL() {
-	/*
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glColor3f(1.0f, 1.0f, 1.0f);
-	vec4 loc = vec4(0.0f,0.0f,5.0f,1.f);
-	loc = loc*rotateY*rotateX;
-	glm::mat4 projection = glm::perspective(90.0f, static_cast<float>(w) / static_cast<float>(h), 0.1f, 30.0f);
-
-	camera = glm::lookAt(glm::vec3(loc.x,loc.y,loc.z), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	camera[3][2] -= zoomValue;
-	
-	vec4 light = vec4(lightX, lightY, lightZ ,1.f);
-	projection = projection * camera;
-	
-	matrix modelMatrix = matrix(1.0f);
-	//Do something similar for u_modelMatrix before rendering things
-	glUniformMatrix4fv(u_projLocation, 1, GL_FALSE, &projection[0][0]);
-	glUniformMatrix4fv(u_modelLocation, 1, GL_FALSE, &modelMatrix[0][0]);
-	glUniform4fv(u_lightPos, 1, &light[0]);
-
-	
-	glDrawElements(GL_TRIANGLES,numIndices,GL_UNSIGNED_INT,0);
-	update();
-	glFlush();
-	*/
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glColor3f(1.0f, 1.0f, 1.0f);
 
@@ -166,7 +141,7 @@ void MyGLWidget::paintGL() {
 	//glm::vec4 l = camera * Vec4(light, 1.0f);
 	glUniform4fv(u_lightLocation, 1, &l[0]);
 	glUniform4fv(u_eyeLocation, 1, &mEyePos[0]);
-
+	
 	box.setWorld(camera);
 	//box.draw();
 	chair.setWorld(camera);
@@ -175,7 +150,8 @@ void MyGLWidget::paintGL() {
 	//table.draw();
 	floor.setWorld(camera);
 	//floor.draw();
-	lBox.setWorld(camera);
+	lBox.setWorld(camera * glm::translate(Matrix(1.0f), Vec3(lightX, lightY, lightZ)));
+	lBox.draw();
 	root->traverse(camera);
 	update();
 	glFlush();

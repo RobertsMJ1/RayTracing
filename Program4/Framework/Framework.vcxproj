@@ -182,8 +182,6 @@
     <None Include="extrusion2.dat" />
     <None Include="lambert.frag" />
     <None Include="lambert.vert" />
-    <None Include="surfrev1.dat" />
-    <None Include="surfrev2.dat" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

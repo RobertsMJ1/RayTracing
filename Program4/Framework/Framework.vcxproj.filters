@@ -143,12 +143,6 @@
     <None Include="extrusion2.dat">
       <Filter>Header Files\Resource Files</Filter>
     </None>
-    <None Include="surfrev1.dat">
-      <Filter>Header Files\Resource Files</Filter>
-    </None>
-    <None Include="surfrev2.dat">
-      <Filter>Header Files\Resource Files</Filter>
-    </None>
     <None Include="lambert.frag">
       <Filter>Header Files\Resource Files</Filter>
     </None>
