@@ -19,11 +19,11 @@ void Table::init(Box* b)
 
 void Table::draw(Vec4 c)
 {
-	Vec4 color = RED;
-	/*
-	if(c == YELLOW) {
+	Vec4 color = c;
+	
+	if(color == WHITE) {
 		color = RED;
-	}*/
+	}
 	//world = Matrix(0.5, 0, 0, 0, 0, 0.5, 0, 0, 0, 0, 0.5, 0, 0, 0, 0, 1);
 	world = world * glm::scale(Matrix(1.0f), Vec3(scaleFactor, scaleFactor, scaleFactor));
 	base->setWorld(world*transform(0, 2, 0, 0, 2.5, 0.1, 2.5));

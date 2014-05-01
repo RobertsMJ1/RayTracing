@@ -159,10 +159,10 @@ void Box::init()
 void Box::draw(Vec4 c)
 {
 	Vec4 color = c; 
-	/*
-	if(c == WHITE) {
+	
+	if(color == WHITE) {
 		color = YELLOW;
-	}*/
+	}
 	glm::vec4 colors[24] = {
 		//Front
 		color,color,color,color,

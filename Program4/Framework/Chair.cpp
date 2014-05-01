@@ -20,8 +20,8 @@ void Chair::init(Box* b)
 
 void Chair::draw(Vec4 c)
 {
-	Vec4 color;
-	if(c == WHITE) {
+	Vec4 color = c;
+	if(color == WHITE) {
 		color = BLUE;
 	}
 	//world = Matrix(0.5, 0, 0, 0, 0, 0.5, 0, 0, 0, 0, 0.5, 0, 0, 0, 0, 1);
