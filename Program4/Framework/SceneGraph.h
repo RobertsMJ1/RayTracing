@@ -50,12 +50,18 @@ public:
 	void setScaleZ(float s){scaleZ = s;}
 
 	void setGeometry(Geometry* b){geometry = b;}
+
+	void setSelected(bool s) {selected = s;}
+
+	SceneGraph** getChildren() {return children;}
 #pragma endregion
 
 private:
 	Geometry* geometry;
 	SceneGraph** children;
 	int width, depth;
+
+	bool selected;
 
 	float transX, transY, transZ;
 	float rotX, rotY, rotZ;

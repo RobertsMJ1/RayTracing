@@ -53,7 +53,7 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>210</y>
+      <y>200</y>
       <width>151</width>
       <height>31</height>
      </rect>
@@ -69,7 +69,7 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>510</y>
+      <y>520</y>
       <width>151</width>
       <height>20</height>
      </rect>
@@ -94,7 +94,7 @@
      <number>1</number>
     </property>
     <property name="value">
-     <number>40</number>
+     <number>-50</number>
     </property>
     <property name="orientation">
      <enum>Qt::Vertical</enum>
@@ -136,7 +136,7 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>240</y>
+      <y>230</y>
       <width>151</width>
       <height>20</height>
      </rect>
@@ -152,7 +152,7 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>480</y>
+      <y>500</y>
       <width>151</width>
       <height>16</height>
      </rect>
@@ -168,7 +168,7 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>310</y>
+      <y>290</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -181,7 +181,7 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>340</y>
+      <y>320</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -194,7 +194,7 @@
     <property name="geometry">
      <rect>
       <x>670</x>
-      <y>340</y>
+      <y>320</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -207,7 +207,7 @@
     <property name="geometry">
      <rect>
       <x>670</x>
-      <y>310</y>
+      <y>290</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -220,7 +220,7 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>290</y>
+      <y>270</y>
       <width>151</width>
       <height>20</height>
      </rect>
@@ -236,7 +236,7 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>370</y>
+      <y>350</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -249,7 +249,7 @@
     <property name="geometry">
      <rect>
       <x>670</x>
-      <y>370</y>
+      <y>350</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -262,13 +262,107 @@
     <property name="geometry">
      <rect>
       <x>620</x>
-      <y>540</y>
+      <y>550</y>
       <width>91</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
      <string>Load Config</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>380</y>
+      <width>151</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Move Geometry</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_8">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>400</y>
+      <width>71</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Prev</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_9">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>430</y>
+      <width>71</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>+X</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_10">
+    <property name="geometry">
+     <rect>
+      <x>670</x>
+      <y>400</y>
+      <width>71</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Next</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_11">
+    <property name="geometry">
+     <rect>
+      <x>670</x>
+      <y>430</y>
+      <width>71</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>-X</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_12">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>460</y>
+      <width>71</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>+Z</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_13">
+    <property name="geometry">
+     <rect>
+      <x>670</x>
+      <y>460</y>
+      <width>71</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>-Z</string>
     </property>
    </widget>
   </widget>
@@ -311,6 +405,12 @@
     <slot>lightYDec()</slot>
     <slot>lightZInc()</slot>
     <slot>lightZDec()</slot>
+    <slot>transXInc()</slot>
+    <slot>transXDec()</slot>
+    <slot>transZInc()</slot>
+    <slot>transZDec()</slot>
+    <slot>prevGeo()</slot>
+    <slot>nextGeo()</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -367,7 +467,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>610</x>
-     <y>273</y>
+     <y>263</y>
     </hint>
     <hint type="destinationlabel">
      <x>509</x>
@@ -383,7 +483,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>612</x>
-     <y>543</y>
+     <y>572</y>
     </hint>
     <hint type="destinationlabel">
      <x>537</x>
@@ -399,7 +499,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>603</x>
-     <y>358</y>
+     <y>343</y>
     </hint>
     <hint type="destinationlabel">
      <x>502</x>
@@ -415,7 +515,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>712</x>
-     <y>361</y>
+     <y>343</y>
     </hint>
     <hint type="destinationlabel">
      <x>488</x>
@@ -431,7 +531,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>620</x>
-     <y>382</y>
+     <y>373</y>
     </hint>
     <hint type="destinationlabel">
      <x>512</x>
@@ -447,7 +547,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>683</x>
-     <y>386</y>
+     <y>373</y>
     </hint>
     <hint type="destinationlabel">
      <x>549</x>
@@ -463,7 +563,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>640</x>
-     <y>416</y>
+     <y>403</y>
     </hint>
     <hint type="destinationlabel">
      <x>529</x>
@@ -479,7 +579,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>674</x>
-     <y>417</y>
+     <y>403</y>
     </hint>
     <hint type="destinationlabel">
      <x>494</x>
@@ -499,7 +599,103 @@
     </hint>
     <hint type="destinationlabel">
      <x>649</x>
-     <y>550</y>
+     <y>572</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_9</sender>
+   <signal>clicked()</signal>
+   <receiver>widget</receiver>
+   <slot>transXInc()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>622</x>
+     <y>472</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>557</x>
+     <y>475</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_11</sender>
+   <signal>clicked()</signal>
+   <receiver>widget</receiver>
+   <slot>transXDec()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>683</x>
+     <y>475</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>522</x>
+     <y>463</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_12</sender>
+   <signal>clicked()</signal>
+   <receiver>widget</receiver>
+   <slot>transZInc()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>613</x>
+     <y>500</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>555</x>
+     <y>501</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_13</sender>
+   <signal>clicked()</signal>
+   <receiver>widget</receiver>
+   <slot>transZDec()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>697</x>
+     <y>501</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>474</x>
+     <y>520</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_8</sender>
+   <signal>clicked()</signal>
+   <receiver>widget</receiver>
+   <slot>prevGeo()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>627</x>
+     <y>445</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>485</x>
+     <y>446</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_10</sender>
+   <signal>clicked()</signal>
+   <receiver>widget</receiver>
+   <slot>nextGeo()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>696</x>
+     <y>441</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>529</x>
+     <y>428</y>
     </hint>
    </hints>
   </connection>

@@ -17,20 +17,25 @@ void Table::init(Box* b)
 	scaleFactor = 0.25;
 }
 
-void Table::draw(Vec4 color)
+void Table::draw(Vec4 c)
 {
+	Vec4 color = RED;
+	/*
+	if(c == YELLOW) {
+		color = RED;
+	}*/
 	//world = Matrix(0.5, 0, 0, 0, 0, 0.5, 0, 0, 0, 0, 0.5, 0, 0, 0, 0, 1);
 	world = world * glm::scale(Matrix(1.0f), Vec3(scaleFactor, scaleFactor, scaleFactor));
 	base->setWorld(world*transform(0, 2, 0, 0, 2.5, 0.1, 2.5));
-	base->draw(RED);
+	base->draw(color);
 	base->setWorld(world*transform(-1, 0, -1, 0, 0.5, 2, 0.5));
-	base->draw(RED);
+	base->draw(color);
 	base->setWorld(world*transform(-1, 0, 1, 0, 0.5, 2, 0.5));
-	base->draw(RED);
+	base->draw(color);
 	base->setWorld(world*transform(1, 0, -1, 0, 0.5, 2, 0.5));
-	base->draw(RED);
+	base->draw(color);
 	base->setWorld(world*transform(1, 0, 1, 0, 0.5, 2, 0.5));
-	base->draw(RED);
+	base->draw(color);
 	base->setWorld(Matrix(1.0f));
 	//world = Matrix(1.0f);
 }

@@ -18,22 +18,26 @@ void Chair::init(Box* b)
 	scaleFactor = 0.25;
 }
 
-void Chair::draw(Vec4 color)
+void Chair::draw(Vec4 c)
 {
+	Vec4 color;
+	if(c == WHITE) {
+		color = BLUE;
+	}
 	//world = Matrix(0.5, 0, 0, 0, 0, 0.5, 0, 0, 0, 0, 0.5, 0, 0, 0, 0, 1);
 	world = world * glm::scale(Matrix(1.0f), Vec3(scaleFactor, scaleFactor, scaleFactor));
 	base->setWorld(world*transform(0, 2, 0, 0, 2.5, 0.1, 2.5));
-	base->draw(BLUE);
+	base->draw(color);
 	base->setWorld(world*transform(-1, 0, -1, 0, 0.5, 2, 0.5));
-	base->draw(BLUE);
+	base->draw(color);
 	base->setWorld(world*transform(-1, 0, 1, 0, 0.5, 2, 0.5));
-	base->draw(BLUE);
+	base->draw(color);
 	base->setWorld(world*transform(1, 0, -1, 0, 0.5, 2, 0.5));
-	base->draw(BLUE);
+	base->draw(color);
 	base->setWorld(world*transform(1, 0, 1, 0, 0.5, 2, 0.5));
-	base->draw(BLUE);
+	base->draw(color);
 	base->setWorld(world*transform(0, 2, -1.2, 0, 2.5, 2.5, 0.1));
-	base->draw(BLUE);
+	base->draw(color);
 	base->setWorld(Matrix(1.0f));
 	world = Matrix(1.0f);
 }

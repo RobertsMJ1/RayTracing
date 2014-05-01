@@ -35,7 +35,7 @@ class Geometry
 {
 public:
 	virtual void init() = 0;
-	virtual void draw(Vec4 color = YELLOW) = 0;
+	virtual void draw(Vec4 color = WHITE) = 0;
 	virtual float getHeight() = 0;
 
 	void setTransX(float t){transX = t;}
@@ -59,10 +59,12 @@ public:
 	float getScaleY(){return scaleY;}
 	float getScaleZ(){return scaleZ;}
 
+
 	Matrix getWorld(){return world;}
 	void setWorld(Matrix w){world = w;}
 
 protected:
+
 
 	Matrix world;
 	float transX, transY, transZ;

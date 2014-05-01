@@ -45,6 +45,14 @@ using glm::vec4;
 const int numVertices = 24;
 
 
+//List of Geometry in Scene; used for manipulation
+struct geoList {
+	SceneGraph* geo;
+	geoList* next;
+	geoList* prev;
+};
+
+
 
 class MyGLWidget : public QGLWidget
 {
@@ -78,6 +86,8 @@ public:
 	*/
 	vector<Mesh*> meshVec;
 
+	void moveGeometry();
+
 public slots:
 	void zoom(int);
 	void pitch(int);
@@ -89,6 +99,12 @@ public slots:
 	void lightYDec() {lightY-=1.0f;}
 	void lightZInc() {lightZ+=1.0f;}
 	void lightZDec() {lightZ-=1.0f;}
+	void transXInc() {transXValue++;}
+	void transXDec() {transXValue--;}
+	void transZInc() {transZValue++;}
+	void transZDec() {transZValue--;}
+	void nextGeo() {geoListCurrent->geo->setSelected(false); geoListCurrent = geoListCurrent->next; geoListCurrent->geo->setSelected(true);}
+	void prevGeo() {geoListCurrent->geo->setSelected(false); geoListCurrent = geoListCurrent->prev; geoListCurrent->geo->setSelected(true);}
 
 private:
 
@@ -96,20 +112,6 @@ private:
 	unsigned int vertexShader;
 	unsigned int fragmentShader;
 	unsigned int shaderProgram;
-	/*
-	unsigned int vbo;
-	unsigned int cbo;
-	unsigned int nbo;
-	unsigned int ibo;
-	
-	unsigned int vLocation;
-	unsigned int vColor;
-	unsigned int vNormal;
-
-	unsigned int u_projLocation;
-	//unsigned int u_modelLocation;
-	//unsigned int u_lightPos;
-	*/
 	
 	unsigned int vbo, cbo, ibo, nbo;
 	unsigned int vLocation, cLocation, nLocation;
@@ -122,9 +124,18 @@ private:
 
 	SceneGraph* root;
 
+	geoList* geoListCurrent;
+	geoList* geoListRoot;
+
+	SceneGraph* currentGeo;
+	int currentCount;
+
 	float zoomValue;
 	float pitchValue;
 	float yawValue;
+
+	int transXValue;
+	int transZValue;
 
 	float lightX;
 	float lightY;
