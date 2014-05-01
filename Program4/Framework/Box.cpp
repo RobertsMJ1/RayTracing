@@ -156,8 +156,13 @@ void Box::init()
 	
 }
 
-void Box::draw(Vec4 color)
+void Box::draw(Vec4 c)
 {
+	Vec4 color = c; 
+	/*
+	if(c == WHITE) {
+		color = YELLOW;
+	}*/
 	glm::vec4 colors[24] = {
 		//Front
 		color,color,color,color,
@@ -173,6 +178,7 @@ void Box::draw(Vec4 color)
 		color,color,color,color
 	};
 
+
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(glm::vec4), points, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(vLocation);
@@ -183,13 +189,18 @@ void Box::draw(Vec4 color)
 	glEnableVertexAttribArray(nLocation);
 	glVertexAttribPointer(nLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36 * sizeof(uint), indices, GL_STATIC_DRAW);
-
 	glBindBuffer(GL_ARRAY_BUFFER, cbo);
 	glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(glm::vec4), colors, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(cLocation);
 	glVertexAttribPointer(cLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36 * sizeof(uint), indices, GL_STATIC_DRAW);
+
+	/*glBindBuffer(GL_ARRAY_BUFFER, cbo);
+	glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(glm::vec4), colors, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(cLocation);
+	glVertexAttribPointer(cLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);*/
 
 	glUniformMatrix4fv(u_modelMatrix, 1, GL_FALSE, &world[0][0]);
 	

@@ -46,6 +46,7 @@ SceneGraph::SceneGraph(Geometry* g, int x, int z, float tx, float ty, float tz, 
 	g->setScaleX(scaleX);
 	g->setScaleY(scaleY);
 	g->setScaleZ(scaleZ);
+	selected = false;
 }
 
 
@@ -66,7 +67,8 @@ void SceneGraph::traverse(Matrix m)
 	if(geometry != 0)
 	{
 		geometry->setWorld(mat);
-		geometry->draw();
+		if(selected) geometry->draw(ORANGE);
+		else geometry->draw();
 	}
 
 	for(int i=0; i<width*depth; i++)

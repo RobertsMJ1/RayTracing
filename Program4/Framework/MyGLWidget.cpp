@@ -36,6 +36,7 @@ void MyGLWidget::initializeGL() {
 	lightX = 0;
 	lightY = 5.0f;
 	lightZ = 0;
+	currentCount = 0;
 	camera = matrix(1.0f);
 	rotateX = matrix(1.0f);
 	rotateY = matrix(1.0f);
@@ -107,17 +108,13 @@ void MyGLWidget::initializeGL() {
 	table.init(&box);
 	floor.init(&box);
 	lBox.init();
-	//chair.init(&box, &vbo, &cbo, &vLocation, &cLocation, &u_projLocation, &u_modelMatrix, &u_lightLocation);
-	//table.init(&box, &vbo, &cbo, &vLocation, &cLocation, &u_projLocation, &u_modelMatrix, &u_lightLocation);
-	//floor.init(&box, &vbo, &cbo, &vLocation, &cLocation, &u_projLocation, &u_modelMatrix, &u_lightLocation);
-	//lBox.init(&vbo, &cbo, &vLocation, &cLocation, &u_projLocation, &u_modelMatrix, &u_lightLocation, &ibo, &nbo, &nLocation);
 
-	/*****************************************Here*****************************************************/
 	processInput("config.txt");
-	/**************************************************************************************************/
+
+
 	//Initial camera positioning
-	pitchValue = 40;
-	zoomValue = -50;
+	pitchValue = -50;
+	zoomValue = -6;
 
 }
 
@@ -137,20 +134,15 @@ void MyGLWidget::paintGL() {
 	//l4 = camera * l4;
 	//light = Vec3(l4);
 	glm::vec4 l(lightX,lightY,lightZ, 1);
-	l = camera * l;
-	//glm::vec4 l = camera * Vec4(light, 1.0f);
+	//l = camera * l;
 	glUniform4fv(u_lightLocation, 1, &l[0]);
 	glUniform4fv(u_eyeLocation, 1, &mEyePos[0]);
 	
 	box.setWorld(camera);
-	//box.draw();
 	chair.setWorld(camera);
-	//chair.draw();
 	table.setWorld(camera);
-	//table.draw();
 	floor.setWorld(camera);
-	//floor.draw();
-	lBox.setWorld(camera * glm::translate(Matrix(1.0f), Vec3(lightX, lightY, lightZ)));
+	lBox.setWorld(camera*glm::translate(glm::mat4(1.0f),vec3(lightX,lightY-2,lightZ)));
 	lBox.draw();
 	root->traverse(camera);
 	update();
@@ -192,7 +184,7 @@ char* MyGLWidget::textFileRead(const char* fileName) {
 }
 
 void MyGLWidget::zoom(int x) {
-	zoomValue = (-x/10.0f)-1;
+	zoomValue = (x/10.0f)-1;
 }
 
 void MyGLWidget::pitch(int x) {
@@ -213,18 +205,15 @@ void MyGLWidget::loadConfig(QString x) {
 	const char* temp = ba.data();
 	fileName = temp;
 	if(fopen(fileName.c_str(),"r")) {
-		//delete sg;
-		//sg = new SceneGraph(fileName.c_str());
-		buildProcGeometry();
+		processInput(fileName);
 		rotateX = matrix(1.0f);
 		rotateY = matrix(1.0f);
 		camera = matrix(1.0f);
-		zoomValue = 0;
-		pitchValue = 0;
+		pitchValue = -50;
+		zoomValue = -6;
 		yawValue = 0;
 	}
 }
-
 
 void MyGLWidget::fillBuffers() {
 	int vertexCount = 0;
@@ -312,6 +301,7 @@ void MyGLWidget::buildProcGeometry() {
 	delete meshVec[0];
 	meshVec.pop_back();
 }
+
 void MyGLWidget::processInput(string fname)
 {
 	glFlush();
@@ -328,23 +318,93 @@ void MyGLWidget::processInput(string fname)
 	root = new SceneGraph(&floor, floorx, floorz);
 	root->setTransX(-floorx/2.0);
 	root->setTransZ(-floorz/2.0);
-
+	w = floorx;
+	h = floorz;
 	string name;
 	float transx, transz;
 	float theta;
 	float scalex, scaley, scalez;
+
+	geoList* temp = new geoList();
+	geoList* temp2;
+	geoListRoot = temp;
 	for(int i=0; i<iter; i++)
 	{
 		fin >> name >> transx >> transz >> theta >> scalex >> scaley >> scalez;
 		
 		if(name == "table"){
-			root->addChild(new SceneGraph(&table, floorx, floorz, transx, 0, transz, theta, scalex, scaley, scalez), transx, transz);
+			SceneGraph* s = new SceneGraph(&table, floorx, floorz, transx, 0, transz, theta, scalex, scaley, scalez);
+			temp2 = temp;
+			temp->next = new geoList();
+			temp->geo = s;
+			temp = temp->next;
+			temp->prev = temp2;
+			root->addChild(s, transx, transz);
+			currentCount++;
 		}
 		else if (name == "chair"){
-			root->addChild(new SceneGraph(&chair, floorx, floorz, transx, 0, transz, theta, scalex, scaley, scalez), transx, transz);
+			SceneGraph* s = new SceneGraph(&chair, floorx, floorz, transx, 0, transz, theta, scalex, scaley, scalez);
+			temp2 = temp;
+			temp->next = new geoList();
+			temp->geo = s;
+			temp = temp->next;
+			temp->prev = temp2;
+			root->addChild(s, transx, transz);
+			currentCount++;
 		}
 		else if (name == "box"){
-			root->addChild(new SceneGraph(&box, floorx, floorz, transx, -0.5, transz, theta, scalex, scaley, scalez), transx, transz);
+			SceneGraph* s = new SceneGraph(&box, floorx, floorz, transx, 0, transz, theta, scalex, scaley, scalez);
+			temp2 = temp;
+			temp->next = new geoList();
+			temp->geo = s;
+			temp = temp->next;
+			temp->prev = temp2;
+			root->addChild(s, transx, transz);
+			currentCount++;
 		}
 	}
+	temp = temp->prev;
+	temp->next = geoListRoot;
+	temp2 = temp;
+	temp = temp->next;
+	temp->prev = temp2;
+	geoListCurrent = geoListRoot;
+	temp->geo->setSelected(false);
+	temp=temp->next;
+	while(temp != geoListRoot) {
+		temp->geo->setSelected(false);
+		temp = temp->next;
+	}
+	geoListCurrent->geo->setSelected(true);
+
+}
+
+void MyGLWidget::moveGeometry() {
+	/*
+	SceneGraph** children = root->getChildren()
+	int tempCount = 0;
+	for(int i=0;i<floorx;i++) {
+		for(int j=0;j<floorz;j++) {
+			if(children[i][j]!=NULL) {
+				if(tempCount == currentCount) {
+					currentGeo = children[i][j];
+					return;
+				}
+				else {
+					tempCount++;
+					currentGeo = currentGeo->getChildren()[i][j];
+					if(currentGeo == NULL) {
+						continue;
+					}
+					while(tempCount != currentCount) {
+						tempCount++;
+						currentGeo = currentGeo->getChildren()[i][j];
+						if(currentGeo == NULL) break;
+					}
+					if(currentGeo == NULL) continue;
+					else return;
+				}
+			}
+		}
+	}*/
 }
