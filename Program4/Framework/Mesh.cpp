@@ -7,11 +7,60 @@ Description: Mesh Implementation
 #include "Mesh.h"
 
 Mesh::Mesh() {
-
+	selected = 0;
 }
 
 Mesh::~Mesh() {
 
+}
+
+void Mesh::init() {
+	glGenBuffers(1, &vbo);
+	glGenBuffers(1, &cbo);
+	glGenBuffers(1, &ibo);
+	glGenBuffers(1, &nbo);
+
+	vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	shaderProgram = glCreateProgram();
+
+	const char* vertexSource = textFileRead(VERTEX_SHADER);
+	const char* fragmentSource = textFileRead(FRAGMENT_SHADER);
+	glShaderSource(vertexShader, 1, &vertexSource, 0);
+	glShaderSource(fragmentShader, 1, &fragmentSource, 0);
+	glCompileShader(vertexShader);
+	glCompileShader(fragmentShader);
+
+	glAttachShader(shaderProgram, vertexShader);
+	glAttachShader(shaderProgram, fragmentShader);
+	glLinkProgram(shaderProgram);
+
+	vLocation = glGetAttribLocation(shaderProgram, "vs_position");
+	cLocation = glGetAttribLocation(shaderProgram, "vs_color");
+	nLocation = glGetAttribLocation(shaderProgram, "vs_normal");
+	u_projLocation = glGetUniformLocation(shaderProgram, "u_projMatrix");
+	u_modelMatrix = glGetUniformLocation(shaderProgram, "u_modelMatrix");
+	u_lightLocation = glGetUniformLocation(shaderProgram, "u_lightPos");
+
+	glUseProgram(shaderProgram);
+
+
+
+}
+
+void Mesh::fileRead(string fileName) {
+	string text = textFileRead(fileName.c_str());
+	stringstream s(text);
+	string type;
+	s >> type;
+	if(type == "extrusion") {
+		calculateExtrusion(s);
+		m = EXTRUSION;
+	}
+	else if(type == "surfrev") {
+		calculateSurfRev(s);
+		m = SURFREV;
+	}
 }
 
 void Mesh::calculateExtrusion(std::stringstream& s) {
@@ -650,4 +699,56 @@ void Mesh::surfRevNone(int count, int slices, vector<vec3> vertices, bool endcap
 			indexCount+=3;
 		}
 	}
+}
+
+void Mesh::draw(vec4 color) {
+	// Fill Vertex Buffer //
+	vec4* bufferPoints;
+	bufferPoints = new vec4[pointsVector.size()];
+	for(int i=0;i<pointsVector.size();i++) {
+		bufferPoints[i] = vec4(pointsVector[i].x,pointsVector[i].y,pointsVector[i].z,1.f);
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, pointsVector.size()*sizeof(vec4), bufferPoints, GL_STATIC_DRAW);
+
+
+	// Fill Color Buffer //
+	vec4* bufferColor;
+	bufferColor = new vec4[pointsVector.size()];
+	for(int i=0;i<pointsVector.size();i++) {
+		if(selected) {
+			bufferColor[i] = ORANGE;
+		}
+		else {
+			bufferColor[i] = color;
+		}
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, cbo);
+	glBufferData(GL_ARRAY_BUFFER, pointsVector.size()*sizeof(vec4), bufferColor, GL_STATIC_DRAW);
+
+	// Fill Normal Buffer //
+	vec4* bufferNormals;
+	bufferNormals = new vec4[normalsVector.size()];
+	for(int i=0;i<normalsVector.size();i++) {
+		bufferNormals[i] = vec4(normalsVector[i].x,normalsVector[i].y,normalsVector[i].z,0.f);
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, nbo);
+	glBufferData(GL_ARRAY_BUFFER, normalsVector.size()*sizeof(vec4), bufferNormals, GL_STATIC_DRAW);
+
+	// Fill Index Buffer //
+	unsigned int* bufferIndices;
+	bufferIndices = new unsigned int[indicesVector.size()];
+	for(int i=0;i<indicesVector.size();i++) {
+		bufferIndices[i] = indicesVector[i];
+	}
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesVector.size()*sizeof(unsigned int), bufferIndices, GL_STATIC_DRAW);
+
+	delete bufferPoints;
+	delete bufferColor;
+	delete bufferNormals;
+
+	glUniformMatrix4fv(u_modelMatrix, 1, GL_FALSE, &world[0][0]);
+	
+	glDrawElements(GL_TRIANGLES, indicesVector.size(), GL_UNSIGNED_INT, 0);
 }

@@ -16,6 +16,9 @@ Description: Mesh Header
 #include <vector>
 #include <string>
 #include <sstream>
+#include "constants.h"
+#include "Geometry.h"
+using namespace std;
 
 
 using glm::vec3;
@@ -29,11 +32,16 @@ struct Face {
 	vec3 normal;
 };
 
-class Mesh {
+enum MESHTYPE {EXTRUSION = 0, SURFREV = 1};
+
+class Mesh : public Geometry {
 
 public:
 	Mesh();
 	~Mesh();
+	void init();
+	void fileRead(string fileName);
+	float getHeight() {return 1;}
 	void calculateExtrusion(std::stringstream &s);
 	void calculateSurfRev(std::stringstream &s);
 
@@ -45,12 +53,30 @@ public:
 	void surfRevBoth(int count, int slices, vector<vec3> vertices);
 	void surfRevNone(int count, int slices, vector<vec3> vertices,bool endcaps);
 
+	void setSelected(bool s) {selected = s;}
+	MESHTYPE getMeshType() {return m;}
+
 	vector<vec3> pointsVector;
 	vector<vec3> colorsVector;
 	vector<vec3> normalsVector;
 	vector<unsigned int> indicesVector;
 	vector<Face*> faces;
 
+	void draw(vec4 color);
+
+private:
+
+	bool selected;
+	MESHTYPE m;
+
+
+	unsigned int vertexShader;
+	unsigned int fragmentShader;
+	unsigned int shaderProgram;
+
+	unsigned int vbo, cbo, ibo, nbo;
+	unsigned int vLocation, cLocation, nLocation;
+	unsigned int u_projLocation, u_modelMatrix, u_lightLocation;
 };
 
 

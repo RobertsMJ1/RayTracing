@@ -109,7 +109,7 @@ void MyGLWidget::initializeGL() {
 	floor.init(&box);
 	lBox.init();
 
-	processInput("config.txt");
+	processInput(CONFIG_FILE);
 
 
 	//Initial camera positioning
@@ -321,6 +321,7 @@ void MyGLWidget::processInput(string fname)
 	w = floorx;
 	h = floorz;
 	string name;
+	string meshFile;
 	float transx, transz;
 	float theta;
 	float scalex, scaley, scalez;
@@ -330,10 +331,11 @@ void MyGLWidget::processInput(string fname)
 	geoListRoot = temp;
 	for(int i=0; i<iter; i++)
 	{
-		fin >> name >> transx >> transz >> theta >> scalex >> scaley >> scalez;
+		fin >> name;
 		
 		if(name == "table"){
-			SceneGraph* s = new SceneGraph(&table, floorx, floorz, transx, 0, transz, theta, scalex, scaley, scalez);
+			fin >> transx >> transz >> theta >> scalex >> scaley >> scalez;
+			SceneGraph* s = new SceneGraph(&table, floorx, floorz, transx, 0, transz, theta, scalex, scaley, scalez, FURNITURE);
 			temp2 = temp;
 			temp->next = new geoList();
 			temp->geo = s;
@@ -343,7 +345,8 @@ void MyGLWidget::processInput(string fname)
 			currentCount++;
 		}
 		else if (name == "chair"){
-			SceneGraph* s = new SceneGraph(&chair, floorx, floorz, transx, 0, transz, theta, scalex, scaley, scalez);
+			fin >> transx >> transz >> theta >> scalex >> scaley >> scalez;
+			SceneGraph* s = new SceneGraph(&chair, floorx, floorz, transx, 0, transz, theta, scalex, scaley, scalez, FURNITURE);
 			temp2 = temp;
 			temp->next = new geoList();
 			temp->geo = s;
@@ -353,7 +356,23 @@ void MyGLWidget::processInput(string fname)
 			currentCount++;
 		}
 		else if (name == "box"){
-			SceneGraph* s = new SceneGraph(&box, floorx, floorz, transx, 0, transz, theta, scalex, scaley, scalez);
+			fin >> transx >> transz >> theta >> scalex >> scaley >> scalez;
+			SceneGraph* s = new SceneGraph(&box, floorx, floorz, transx, 0, transz, theta, scalex, scaley, scalez, FURNITURE);
+			temp2 = temp;
+			temp->next = new geoList();
+			temp->geo = s;
+			temp = temp->next;
+			temp->prev = temp2;
+			root->addChild(s, transx, transz);
+			currentCount++;
+		}
+		else if (name == "mesh") {
+			int idk;
+			fin >> meshFile >> idk >> transx >> transz >> theta >> scalex >> scaley >> scalez;
+			Mesh* tempMesh = new Mesh();
+			tempMesh->init();
+			tempMesh->fileRead(meshFile);
+			SceneGraph* s = new SceneGraph(tempMesh,floorx, floorz, transx, 0, transz, theta, scalex, scaley, scalez, MESH);
 			temp2 = temp;
 			temp->next = new geoList();
 			temp->geo = s;
@@ -379,35 +398,6 @@ void MyGLWidget::processInput(string fname)
 
 }
 
-void MyGLWidget::moveGeometry() {
-	/*
-	SceneGraph** children = root->getChildren()
-	int tempCount = 0;
-	for(int i=0;i<floorx;i++) {
-		for(int j=0;j<floorz;j++) {
-			if(children[i][j]!=NULL) {
-				if(tempCount == currentCount) {
-					currentGeo = children[i][j];
-					return;
-				}
-				else {
-					tempCount++;
-					currentGeo = currentGeo->getChildren()[i][j];
-					if(currentGeo == NULL) {
-						continue;
-					}
-					while(tempCount != currentCount) {
-						tempCount++;
-						currentGeo = currentGeo->getChildren()[i][j];
-						if(currentGeo == NULL) break;
-					}
-					if(currentGeo == NULL) continue;
-					else return;
-				}
-			}
-		}
-	}*/
-}
 
 void MyGLWidget::nextGeo() {
 	geoListCurrent->geo->setSelected(false); 

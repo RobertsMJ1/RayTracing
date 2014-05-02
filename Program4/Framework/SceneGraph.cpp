@@ -25,9 +25,11 @@ SceneGraph::SceneGraph(Geometry* g, int x, int z)
 	scaleY = 1;
 	scaleZ = 1;
 	g->setScaleY(scaleY);
+	selected = false;
+	type = FURNITURE;
 }
 
-SceneGraph::SceneGraph(Geometry* g, int x, int z, float tx, float ty, float tz, float ry, float sx, float sy, float sz)
+SceneGraph::SceneGraph(Geometry* g, int x, int z, float tx, float ty, float tz, float ry, float sx, float sy, float sz, GEOMETRYTYPE gtype)
 {
 	geometry = g;
 	width = x;
@@ -47,6 +49,7 @@ SceneGraph::SceneGraph(Geometry* g, int x, int z, float tx, float ty, float tz, 
 	g->setScaleY(scaleY);
 	g->setScaleZ(scaleZ);
 	selected = false;
+	type = gtype;
 }
 
 

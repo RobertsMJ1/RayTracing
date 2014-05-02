@@ -12,21 +12,23 @@
 #include <QGLWidget>
 #include <stdlib.h>
 #include <QDebug>
-
 #include <vector>
 using std::vector;
 #include "../glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
+#include "Mesh.h"
+#include "constants.h"
+#include "Geometry.h"
 #include <list>
 using std::list;
 
-#include "Geometry.h"
+
 
 class SceneGraph
 {
 public:
 	SceneGraph(Geometry* g, int x, int z);
-	SceneGraph(Geometry* g, int x, int z, float tx, float ty, float tz, float ry, float sx, float sy, float sz);
+	SceneGraph(Geometry* g, int x, int z, float tx, float ty, float tz, float ry, float sx, float sy, float sz, GEOMETRYTYPE gtype);
 	~SceneGraph(void);
 	//The scene graph is a rough wrapper to contain the root and the rest of the tree.
 	//Node* root;
@@ -70,10 +72,13 @@ public:
 
 private:
 	Geometry* geometry;
+	Mesh* mesh;
+	GEOMETRYTYPE type;
 	SceneGraph** children;
 	int width, depth;
 
 	bool selected;
+
 
 	float transX, transY, transZ;
 	float rotX, rotY, rotZ;

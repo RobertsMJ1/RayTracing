@@ -14,6 +14,8 @@
 
 const float PI = 3.14159265358979323f;
 
+enum GEOMETRYTYPE {FURNITURE = 0, MESH = 1};
+
 #define VERTEX_SHADER "lambert.vert"
 #define FRAGMENT_SHADER "lambert.frag"
 

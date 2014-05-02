@@ -29,7 +29,7 @@ using std::stringstream;
 
 using glm::vec4;
 
-#define CONFIG_FILE "config.txt"
+#define CONFIG_FILE "config2.txt"
 
 #define BLACK_COLOR			vec4( 0.0, 0.0, 0.0, 1.0 )
 #define RED_COLOR			vec4( 1.0, 0.0, 0.0, 1.0 )
@@ -43,6 +43,8 @@ using glm::vec4;
 #define BUFFER_OFFSET(bytes) ((GLvoid*) (bytes))
 
 const int numVertices = 24;
+
+
 
 
 //List of Geometry in Scene; used for manipulation
@@ -86,7 +88,6 @@ public:
 	*/
 	vector<Mesh*> meshVec;
 
-	void moveGeometry();
 
 public slots:
 	void zoom(int);
