@@ -41,13 +41,25 @@ public:
 	void setTransY(float t){transY = t;}
 	void setTransZ(float t){transZ = t;}
 
+	float getTransX() {return transX;}
+	float getTransY() {return transY;}
+	float getTransZ() {return transZ;}
+
 	void setRotX(float r){rotX = r;}
 	void setRotY(float r){rotY = r;}
 	void setRotZ(float r){rotZ = r;}
 
+	float getRotX() {return rotX;}
+	float getRotY() {return rotY;}
+	float getRotZ() {return rotZ;}
+
 	void setScaleX(float s){scaleX = s;}
 	void setScaleY(float s){scaleY = s;}
 	void setScaleZ(float s){scaleZ = s;}
+
+	float getScaleX() {return scaleX;}
+	float getScaleY() {return scaleY;}
+	float getScaleZ() {return scaleZ;}
 
 	void setGeometry(Geometry* b){geometry = b;}
 

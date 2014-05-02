@@ -99,12 +99,12 @@ public slots:
 	void lightYDec() {lightY-=1.0f;}
 	void lightZInc() {lightZ+=1.0f;}
 	void lightZDec() {lightZ-=1.0f;}
-	void transXInc() {transXValue++;}
-	void transXDec() {transXValue--;}
-	void transZInc() {transZValue++;}
-	void transZDec() {transZValue--;}
-	void nextGeo() {geoListCurrent->geo->setSelected(false); geoListCurrent = geoListCurrent->next; geoListCurrent->geo->setSelected(true);}
-	void prevGeo() {geoListCurrent->geo->setSelected(false); geoListCurrent = geoListCurrent->prev; geoListCurrent->geo->setSelected(true);}
+	void transXInc() {transXValue++; geoListCurrent->geo->setTransX(geoListCurrent->geo->getTransX()+1);}
+	void transXDec() {transXValue--; geoListCurrent->geo->setTransX(geoListCurrent->geo->getTransX()-1);}
+	void transZInc() {transZValue++; geoListCurrent->geo->setTransZ(geoListCurrent->geo->getTransZ()+1);}
+	void transZDec() {transZValue--; geoListCurrent->geo->setTransZ(geoListCurrent->geo->getTransZ()-1);}
+	void nextGeo();
+	void prevGeo();
 
 private:
 

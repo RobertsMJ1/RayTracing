@@ -408,3 +408,18 @@ void MyGLWidget::moveGeometry() {
 		}
 	}*/
 }
+
+void MyGLWidget::nextGeo() {
+	geoListCurrent->geo->setSelected(false); 
+	geoListCurrent = geoListCurrent->next; 
+	geoListCurrent->geo->setSelected(true);
+	transXValue = 0;
+	transZValue = 0;
+}
+void MyGLWidget:: prevGeo() {
+	geoListCurrent->geo->setSelected(false); 
+	geoListCurrent = geoListCurrent->prev; 
+	geoListCurrent->geo->setSelected(true);
+	transXValue = 0;
+	transZValue = 0;
+}
