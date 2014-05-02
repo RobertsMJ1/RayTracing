@@ -52,7 +52,11 @@ struct geoList {
 	geoList* prev;
 };
 
-
+struct ray
+{
+	vec3 origin;
+	vec3 direction;
+};
 
 class MyGLWidget : public QGLWidget
 {
@@ -85,6 +89,8 @@ public:
 	vector<Face*> faces;
 	*/
 	vector<Mesh*> meshVec;
+
+	vec3 rayTrace(int resX, int resY);
 
 	void moveGeometry();
 

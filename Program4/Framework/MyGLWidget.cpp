@@ -134,7 +134,7 @@ void MyGLWidget::paintGL() {
 	//l4 = camera * l4;
 	//light = Vec3(l4);
 	glm::vec4 l(lightX,lightY,lightZ, 1);
-	//l = camera * l;
+	l = camera * l;
 	glUniform4fv(u_lightLocation, 1, &l[0]);
 	glUniform4fv(u_eyeLocation, 1, &mEyePos[0]);
 	
@@ -409,6 +409,45 @@ void MyGLWidget::moveGeometry() {
 	}*/
 }
 
+vec3 MyGLWidget::rayTrace(int resX, int resY)
+{
+	//Generate ray
+	//First, calculate m in the view plane
+	vec3 m = vec3(0,0,0) - vec3(mEyePos);
+	m = glm::normalize(m);
+
+	//c is the vector from the plane to the camera
+	vec3 c = m;
+	m += vec3(mEyePos);
+
+	//The angle we will use for calculating V & H
+	float halfy = 45.0f/2.0f;
+
+	//v and h vectors from
+	vec3 v = vec3(mUp) * glm::tan(halfy);
+
+	//Suggested by boatright, rotate v 90% and scale by aspect ratio
+	vec3 h = vec3(glm::rotate(glm::mat4(1.0f), 90.0f, c) * vec4(v, 0));
+	h = h * static_cast<float>(resX)/static_cast<float>(resY);
+
+	//Now, generate each ray
+	for(int x = 0; x < resX; x++)
+	{
+		for(int y = 0; y < resY; y++)
+		{
+			vec3 p = m + ((2*x/static_cast<float>(resX-1))-1)*h + ((2*y/static_cast<float>(resY-1))-1)*v;
+			
+			vec3 D = glm::normalize(p-vec3(mEyePos));
+
+			//So, the ray is defined to have origin of mEyePos and direction D.
+			//For each ray, do the intersection tests?
+			
+		}
+	}
+
+
+	return vec3(0, 0, 0);
+}
 void MyGLWidget::nextGeo() {
 	geoListCurrent->geo->setSelected(false); 
 	geoListCurrent = geoListCurrent->next; 
