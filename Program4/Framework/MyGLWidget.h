@@ -92,8 +92,6 @@ public:
 	*/
 	vector<Mesh*> meshVec;
 
-<<<<<<< HEAD
-=======
 	vec3 rayTrace(int resX, int resY);
 	float RaySphereIntersect(const vec3& P0, const vec3& V0, const Matrix& T);
 	float RayPolyIntersect(const vec3& P0, const vec3& V0, const vec3& p1, const vec3& p2, const vec3& p3, const Matrix& T);
@@ -101,7 +99,6 @@ public:
 	float RayCubeIntersect(const vec3& P0, const vec3& V0, const Matrix& T);
 
 	void moveGeometry();
->>>>>>> f9c826be33bf26928ce07f83918c30bdff3da866
 
 public slots:
 	void zoom(int);
@@ -171,5 +168,5 @@ private:
 	int numIndices;
 	string fileName;
 
-	const float epsilon = 0.001;
+	float epsilon;
 };

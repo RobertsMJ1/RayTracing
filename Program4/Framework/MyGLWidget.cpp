@@ -12,12 +12,12 @@ using glm::cross;
 using glm::normalize;
 using glm::length;
 using glm::mat3;
-using glm::min;
 using glm::determinant;
 
 
 
 MyGLWidget::MyGLWidget(QWidget* parent) : QGLWidget(parent) {
+	epsilon = 0.001;
 }
 
 MyGLWidget::~MyGLWidget() {
