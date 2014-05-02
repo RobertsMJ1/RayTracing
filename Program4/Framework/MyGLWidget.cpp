@@ -6,6 +6,14 @@ Description: GLWidget Implementation
 ***********************/
 #include "MyGLWidget.h"
 #include "../glm/gtc/matrix_transform.hpp"
+using glm::inverse;
+using glm::dot;
+using glm::cross;
+using glm::normalize;
+using glm::length;
+using glm::mat3;
+using glm::min;
+using glm::determinant;
 
 
 
@@ -134,7 +142,7 @@ void MyGLWidget::paintGL() {
 	//l4 = camera * l4;
 	//light = Vec3(l4);
 	glm::vec4 l(lightX,lightY,lightZ, 1);
-	//l = camera * l;
+	l = camera * l;
 	glUniform4fv(u_lightLocation, 1, &l[0]);
 	glUniform4fv(u_eyeLocation, 1, &mEyePos[0]);
 	
@@ -412,4 +420,200 @@ void MyGLWidget:: prevGeo() {
 	geoListCurrent->geo->setSelected(true);
 	transXValue = 0;
 	transZValue = 0;
+}
+
+vec3 MyGLWidget::rayTrace(int resX, int resY)
+{
+	//Generate ray
+	//First, calculate m in the view plane
+	vec3 m = vec3(0,0,0) - vec3(mEyePos);
+	m = glm::normalize(m);
+
+	//c is the vector from the plane to the camera
+	vec3 c = m;
+	m += vec3(mEyePos);
+
+	//The angle we will use for calculating V & H
+	float halfy = 45.0f/2.0f;
+
+	//v and h vectors from
+	vec3 v = vec3(mUp) * glm::tan(halfy);
+
+	//Suggested by boatright, rotate v 90% and scale by aspect ratio
+	vec3 h = vec3(glm::rotate(glm::mat4(1.0f), 90.0f, c) * vec4(v, 0));
+	h = h * static_cast<float>(resX)/static_cast<float>(resY);
+
+	//Now, generate each ray
+	for(int x = 0; x < resX; x++)
+	{
+		for(int y = 0; y < resY; y++)
+		{
+			vec3 p = m + ((2*x/static_cast<float>(resX-1))-1)*h + ((2*y/static_cast<float>(resY-1))-1)*v;
+			
+			vec3 D = glm::normalize(p-vec3(mEyePos));
+
+			//So, the ray is defined to have origin of mEyePos and direction D.
+			//For each ray, cycle through all geometry and do intersection tests
+
+			
+		}
+	}
+
+
+	return vec3(0, 0, 0);
+}
+
+float MyGLWidget::RaySphereIntersect(const vec3& P0, const vec3& V0, const Matrix& T) {
+	// TODO fill this in.
+	// See the documentation of this function in stubs.h.
+	float t1 = 1e26, t2 = 1e26;
+	vec4 p4(P0, 1);
+	vec4 v4(V0, 0);
+	p4 = inverse(T) * p4;
+	v4 = inverse(T) * v4;
+	vec3 s(p4.x, p4.y, p4.z);
+	vec3 v(v4.x, v4.y, v4.z);
+
+	double a = 1.0f;
+	double b = dot(2.0f*v, s);
+	double c = pow(length(s), 2) - 1;
+	
+	double d = pow(b, 2) - (4*a*c);
+
+	if(d >= 0)t1 = (-b + sqrt(d))/(2*a);
+	if(d >= 0)t2 = (-b - sqrt(d))/(2*a);
+
+	if(d >= 0 - epsilon && d <= 0 + epsilon) return 1e26;
+	if(t1 < 0 && t2 < 0) return -1;
+	if(t1 > 0 || t2 > 0) 
+	{
+		if(t1 < 0) return t2;
+		if(t2 < 0) return t1;
+		return min(t1, t2);
+	}
+	//else return min(t1, t2);
+}
+float MyGLWidget::RayPolyIntersect(const vec3& P0, const vec3& V0, const vec3& p1, const vec3& p2, const vec3& p3, const Matrix& T) {
+	// TODO fill this in.
+	// See the documentation of this function in stubs.h.
+	float t = 1e26;
+	vec4 p4(P0, 1);
+	vec4 v4(V0, 0);
+	p4 = inverse(T) * p4;
+	v4 = inverse(T) * v4;
+	vec3 s(p4.x, p4.y, p4.z);
+	vec3 v(v4.x, v4.y, v4.z);
+
+	vec3 N = cross(p3-p1, p2-p1);
+	N = normalize(N);
+	
+	double denominator = dot(N, v);
+	//denominator = abs(denominator);
+	if(abs(denominator) >= 0)
+	{
+		t = (dot(N, p1-s))/denominator;
+		vec3 p = s + t*v;
+		
+		double area_whole = triangleArea(p1, p2, p3);
+		double area1 = triangleArea(p, p2, p3)/area_whole;
+		double area2 = triangleArea(p, p3, p1)/area_whole;
+		double area3 = triangleArea(p, p1, p2)/area_whole;
+		if(area1 + area2 + area3 <= 1 + epsilon && area1 + area2 + area3 >= 1 - epsilon)
+		{
+			return t;
+		}
+		else return -1;
+	}
+
+	return -1;
+}
+float MyGLWidget::triangleArea(const vec3& p0, const vec3& p1, const vec3& p2)
+{
+	mat3 m1(p0.y, p1.y, p2.y,
+			p0.z, p1.z, p2.z,
+			1,    1,    1);
+	mat3 m2(p0.z, p1.z, p2.z,
+			p0.x, p1.x, p2.x,
+			1,    1,    1);
+	mat3 m3(p0.x, p1.x, p2.x,
+			p0.y, p1.y, p2.y,
+			1,    1,    1);
+	return sqrt(pow(determinant(m1), 2) + pow(determinant(m2),2) + pow(determinant(m3), 2))/2.0f;
+}
+float MyGLWidget::RayCubeIntersect(const vec3& P0, const vec3& V0, const Matrix& T) {
+	// TODO fill this in.
+	// See the documentation of this function in stubs.h.
+	float t = -1;
+	vec4 p4(P0, 1);
+	vec4 v4(V0, 0);
+	p4 = inverse(T) * p4;
+	v4 = inverse(T) * v4;
+	vec3 s(p4.x, p4.y, p4.z);
+	vec3 v(v4.x, v4.y, v4.z);
+
+	double tnear = -1e26;
+	double tfar = 1e26;
+
+	//x-plane
+	if(v.x != 0)
+	{
+		double t1 = (-0.5-s.x) / v.x;
+		double t2 = (0.5 - s.x) / v.x;
+		if(t1 > t2)
+		{
+			double temp = t1;
+			t1 = t2;
+			t2 = temp;
+		}
+		if(t1 > tnear) tnear = t1;
+		if(t2 < tfar) tfar = t2;
+		if(tnear > tfar) 
+			return t;
+		if(tfar < 0) 
+			return t;
+	}
+	//y-plane
+	if(v.y != 0)
+	{
+		double t1 = (-0.5-s.y) / v.y;
+		double t2 = (0.5 - s.y) / v.y;
+		if(t1 > t2)
+		{
+			double temp = t1;
+			t1 = t2;
+			t2 = temp;
+		}
+		if(t1 > tnear) tnear = t1;
+		if(t2 < tfar) tfar = t2;
+		if(tnear > tfar) 
+			return t;
+		if(tfar < 0) 
+			return t;
+	}
+	//z-plane
+	if(v.z != 0)
+	{
+		double t1 = (-0.5-s.z) / v.z;
+		double t2 = (0.5 - s.z) / v.z;
+		if(t1 > t2)
+		{
+			double temp = t1;
+			t1 = t2;
+			t2 = temp;
+		}
+		if(t1 > tnear) tnear = t1;
+		if(t2 < tfar) tfar = t2;
+		if(tnear > tfar)
+			return t;
+		if(tfar < 0) 
+			return t;
+	}
+
+	if(tnear < -1e25) return -1;
+
+	vec3 finalpt = s + ((float)tnear * v);
+	if(finalpt.x > 0.5 + epsilon || finalpt.x < -0.5 - epsilon || finalpt.y > 0.5 + epsilon || finalpt.y < -0.5 - epsilon || finalpt.z > 0.5 + epsilon || finalpt.z < -0.5 - epsilon) 
+		return -1;
+
+	return tnear;
 }
