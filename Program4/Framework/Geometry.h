@@ -8,6 +8,16 @@
 #include <fstream>
 using std::ifstream;
 #include <stdio.h>
+using glm::vec3;
+using glm::vec4;
+using glm::mat4;
+using glm::mat3;
+using glm::inverse;
+using glm::dot;
+using glm::cross;
+using glm::normalize;
+using glm::determinant;
+
 
 inline char* textFileRead(const char* fileName) {
     char* text;
@@ -37,6 +47,8 @@ public:
 	virtual void init() = 0;
 	virtual void draw(Vec4 color = WHITE) = 0;
 	virtual float getHeight() = 0;
+	virtual float intersectionTest(const vec3& p, const vec3& v, const mat4& m) = 0;
+	virtual vec3 getColor() = 0;
 
 	void setTransX(float t){transX = t;}
 	void setTransY(float t){transY = t;}
@@ -59,12 +71,15 @@ public:
 	float getScaleY(){return scaleY;}
 	float getScaleZ(){return scaleZ;}
 
-
 	Matrix getWorld(){return world;}
 	void setWorld(Matrix w){world = w;}
 
-protected:
+	void setReflectivity(float r){reflectivity = r;}
+	float getReflectivity(){return reflectivity;}
 
+
+
+protected:
 
 	Matrix world;
 	float transX, transY, transZ;
@@ -72,5 +87,8 @@ protected:
 	float scaleX, scaleY, scaleZ;
 
 	float height;
+
+	float reflectivity;
 };
 
+float triangleArea(const vec3& p0, const vec3& p1, const vec3& p2);

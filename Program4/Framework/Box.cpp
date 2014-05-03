@@ -195,7 +195,7 @@ void Box::draw(Vec4 c)
 	glVertexAttribPointer(cLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36 * sizeof(uint), indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
 	/*glBindBuffer(GL_ARRAY_BUFFER, cbo);
 	glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(glm::vec4), colors, GL_STATIC_DRAW);
@@ -205,4 +205,84 @@ void Box::draw(Vec4 c)
 	glUniformMatrix4fv(u_modelMatrix, 1, GL_FALSE, &world[0][0]);
 	
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+}
+
+float Box::intersectionTest(const vec3& P, const vec3& V, const mat4& m)
+{
+	// TODO fill this in.
+	// See the documentation of this function in stubs.h.
+	float t = -1;
+	vec4 p4(P, 1);
+	vec4 v4(V, 0);
+	p4 = inverse(m) * p4;
+	v4 = inverse(m) * v4;
+	vec3 s(p4.x, p4.y, p4.z);
+	vec3 v(v4.x, v4.y, v4.z);
+
+	double tnear = -1e26;
+	double tfar = 1e26;
+
+	//x-plane
+	if(v.x != 0)
+	{
+		double t1 = (-0.5-s.x) / v.x;
+		double t2 = (0.5 - s.x) / v.x;
+		if(t1 > t2)
+		{
+			double temp = t1;
+			t1 = t2;
+			t2 = temp;
+		}
+		if(t1 > tnear) tnear = t1;
+		if(t2 < tfar) tfar = t2;
+		if(tnear > tfar) 
+			return t;
+		if(tfar < 0) 
+			return t;
+	}
+	//y-plane
+	if(v.y != 0)
+	{
+		double t1 = (0-s.y) / v.y;
+		double t2 = (1 - s.y) / v.y;
+		if(t1 > t2)
+		{
+			double temp = t1;
+			t1 = t2;
+			t2 = temp;
+		}
+		if(t1 > tnear) tnear = t1;
+		if(t2 < tfar) tfar = t2;
+		if(tnear > tfar) 
+			return t;
+		if(tfar < 0) 
+			return t;
+	}
+	//z-plane
+	if(v.z != 0)
+	{
+		double t1 = (-0.5-s.z) / v.z;
+		double t2 = (0.5 - s.z) / v.z;
+		if(t1 > t2)
+		{
+			double temp = t1;
+			t1 = t2;
+			t2 = temp;
+		}
+		if(t1 > tnear) tnear = t1;
+		if(t2 < tfar) tfar = t2;
+		if(tnear > tfar)
+			return t;
+		if(tfar < 0) 
+			return t;
+	}
+
+	if(tnear < -1e25) return -1;
+
+	vec3 finalpt = s + ((float)tnear * v);
+	float epsilon = 0.0001;
+	if(finalpt.x > 0.5 + epsilon || finalpt.x < -0.5 - epsilon || finalpt.y > 1 + epsilon || finalpt.y < 0 - epsilon || finalpt.z > 0.5 + epsilon || finalpt.z < -0.5 - epsilon) 
+		return -1;
+
+	return tnear;
 }

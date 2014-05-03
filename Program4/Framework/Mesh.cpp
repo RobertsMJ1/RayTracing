@@ -752,3 +752,47 @@ void Mesh::draw(vec4 color) {
 	
 	glDrawElements(GL_TRIANGLES, indicesVector.size(), GL_UNSIGNED_INT, 0);
 }
+
+float Mesh::intersectionTest(const vec3& P, const vec3& V, const mat4& m)
+{
+	float result = -1;
+	for(int i=0; i<indicesVector.size()-2; i+= 3)
+	{
+		vec3 p1 = pointsVector[indicesVector[i]];
+		vec3 p2 = pointsVector[indicesVector[i+1]];
+		vec3 p3 = pointsVector[indicesVector[i+2]];
+		// TODO fill this in.
+		// See the documentation of this function in stubs.h.
+		float t = 1e26;
+		vec4 p4(P, 1);
+		vec4 v4(V, 0);
+		p4 = inverse(m) * p4;
+		v4 = inverse(m) * v4;
+		vec3 s(p4.x, p4.y, p4.z);
+		vec3 v(v4.x, v4.y, v4.z);
+
+		vec3 N = cross(p3-p1, p2-p1);
+		N = normalize(N);
+	
+		double denominator = dot(N, v);
+		//denominator = abs(denominator);
+		float epsilon = 0.0001;
+		if(abs(denominator) >= 0)
+		{
+			t = (dot(N, p1-s))/denominator;
+			vec3 p = s + t*v;
+		
+			double area_whole = triangleArea(p1, p2, p3);
+			double area1 = triangleArea(p, p2, p3)/area_whole;
+			double area2 = triangleArea(p, p3, p1)/area_whole;
+			double area3 = triangleArea(p, p1, p2)/area_whole;
+			if(area1 + area2 + area3 <= 1 + epsilon && area1 + area2 + area3 >= 1 - epsilon)
+			{
+				//return t;
+				if(t < result || result == -1) result = t;
+			}
+			//else return -1;
+		}
+	}
+	return result;
+}

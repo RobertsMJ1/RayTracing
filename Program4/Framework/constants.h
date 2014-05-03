@@ -12,8 +12,6 @@
 #define WHITE Vec4(1, 1, 1, 1)
 #define GREEN Vec4(0, 1, 0, 1)
 
-const float PI = 3.14159265358979323f;
-
 enum GEOMETRYTYPE {FURNITURE = 0, MESH = 1};
 
 #define VERTEX_SHADER "lambert.vert"
