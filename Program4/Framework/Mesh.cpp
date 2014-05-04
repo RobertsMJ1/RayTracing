@@ -11,6 +11,37 @@ Mesh::Mesh()
 {
 	this->pointsInIndex = 0;
 }
+
+void Mesh::init() {
+	glGenBuffers(1, &vbo);
+	glGenBuffers(1, &cbo);
+	glGenBuffers(1, &ibo);
+	glGenBuffers(1, &nbo);
+
+	vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	shaderProgram = glCreateProgram();
+
+	const char* vertexSource = textFileRead(VERTEX_SHADER);
+	const char* fragmentSource = textFileRead(FRAGMENT_SHADER);
+	glShaderSource(vertexShader, 1, &vertexSource, 0);
+	glShaderSource(fragmentShader, 1, &fragmentSource, 0);
+	glCompileShader(vertexShader);
+	glCompileShader(fragmentShader);
+
+	glAttachShader(shaderProgram, vertexShader);
+	glAttachShader(shaderProgram, fragmentShader);
+	glLinkProgram(shaderProgram);
+
+	vLocation = glGetAttribLocation(shaderProgram, "vs_position");
+	cLocation = glGetAttribLocation(shaderProgram, "vs_color");
+	nLocation = glGetAttribLocation(shaderProgram, "vs_normal");
+	u_projLocation = glGetUniformLocation(shaderProgram, "u_projMatrix");
+	u_modelMatrix = glGetUniformLocation(shaderProgram, "u_modelMatrix");
+	u_lightLocation = glGetUniformLocation(shaderProgram, "u_lightPos");
+
+	glUseProgram(shaderProgram);
+}
 Mesh::Mesh(QString filename)
 {
 	faces = new NewFace[1000];
@@ -268,4 +299,86 @@ void Mesh::fillBuffers()
 
 		startIndex += faces[i].edgeCount;
 	}
+}
+
+void Mesh::draw(Vec4 c) {
+	// Fill Vertex Buffer //
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, pointsInBuffer*sizeof(vec4), points, GL_STATIC_DRAW);
+
+
+	// Fill Color Buffer //
+	vec4* bufferColor;
+	bufferColor = new vec4[pointsInBuffer];
+	for(int i=0;i<pointsInBuffer;i++) {
+		if(selected) {
+			bufferColor[i] = ORANGE;
+		}
+		else {
+			bufferColor[i] = c;
+		}
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, cbo);
+	glBufferData(GL_ARRAY_BUFFER, pointsInBuffer*sizeof(vec4), bufferColor, GL_STATIC_DRAW);
+
+	// Fill Normal Buffer //
+	glBindBuffer(GL_ARRAY_BUFFER, nbo);
+	glBufferData(GL_ARRAY_BUFFER, pointsInBuffer*sizeof(vec4), normals, GL_STATIC_DRAW);
+
+	// Fill Index Buffer //
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, pointsInIndex*sizeof(unsigned int), indices, GL_STATIC_DRAW);
+
+	delete bufferColor;
+
+	glUniformMatrix4fv(u_modelMatrix, 1, GL_FALSE, &world[0][0]);
+	
+	glDrawElements(GL_TRIANGLES, pointsInIndex, GL_UNSIGNED_INT, 0);
+}
+
+float Mesh::intersectionTest(const vec3& P, const vec3& V, const mat4& m)
+{
+	float result = -1;
+	for(int i=0; i<pointsInIndex-2; i+= 3)
+	{
+		vec4 tp1 = points[indices[i]];
+		vec4 tp2 = points[indices[i+1]];
+		vec4 tp3 = points[indices[i+2]];
+		vec3 p1 = vec3(tp1.x, tp1.y, tp1.z);
+		vec3 p2 = vec3(tp2.x, tp2.y, tp2.z);
+		vec3 p3 = vec3(tp3.x, tp3.y, tp3.z);
+		// TODO fill this in.
+		// See the documentation of this function in stubs.h.
+		float t = 1e26;
+		vec4 p4(P, 1);
+		vec4 v4(V, 0);
+		p4 = inverse(m) * p4;
+		v4 = inverse(m) * v4;
+		vec3 s(p4.x, p4.y, p4.z);
+		vec3 v(v4.x, v4.y, v4.z);
+
+		vec3 N = cross(p3-p1, p2-p1);
+		N = normalize(N);
+	
+		double denominator = dot(N, v);
+		//denominator = abs(denominator);
+		float epsilon = 0.0001;
+		if(abs(denominator) >= 0)
+		{
+			t = (dot(N, p1-s))/denominator;
+			vec3 p = s + t*v;
+		
+			double area_whole = triangleArea(p1, p2, p3);
+			double area1 = triangleArea(p, p2, p3)/area_whole;
+			double area2 = triangleArea(p, p3, p1)/area_whole;
+			double area3 = triangleArea(p, p1, p2)/area_whole;
+			if(area1 + area2 + area3 <= 1 + epsilon && area1 + area2 + area3 >= 1 - epsilon)
+			{
+				//return t;
+				if(t < result || result == -1) result = t;
+			}
+			//else return -1;
+		}
+	}
+	return result;
 }

@@ -227,7 +227,7 @@ void MyGLWidget::loadConfig(QString x) {
 }
 
 void MyGLWidget::fillBuffers() {
-	int vertexCount = 0;
+	/*int vertexCount = 0;
 	int indicesCount = 0;
 	for(int i=0;i<meshVec.size();i++) {
 		vertexCount += meshVec[i]->pointsVector.size();
@@ -292,10 +292,11 @@ void MyGLWidget::fillBuffers() {
 	delete bufferColor;
 	delete bufferNormals;
 	delete bufferIndices;
-	return;
+	return;*/
 }
 
 void MyGLWidget::buildProcGeometry() {
+	/*
 	string text = textFileRead(fileName.c_str());
 	stringstream s(text);
 	string type;
@@ -310,7 +311,7 @@ void MyGLWidget::buildProcGeometry() {
 	}
 	fillBuffers();
 	delete meshVec[0];
-	meshVec.pop_back();
+	meshVec.pop_back();*/
 }
 
 void MyGLWidget::processInput(string fname)
@@ -380,9 +381,12 @@ void MyGLWidget::processInput(string fname)
 		else if (name == "mesh") {
 			int idk;
 			fin >> meshFile >> idk >> transx >> transz >> theta >> scalex >> scaley >> scalez;
-			Mesh* tempMesh = new Mesh();
+			Mesh* tempMesh = new Mesh(QString(meshFile.c_str()));
 			tempMesh->init();
-			tempMesh->fileRead(meshFile);
+			tempMesh->fillBuffers();
+
+			//tempMesh->init();
+			//tempMesh->fileRead(meshFile);
 			SceneGraph* s = new SceneGraph(tempMesh,floorx, floorz, transx, 0, transz, theta, scalex, scaley, scalez, MESH);
 			temp2 = temp;
 			temp->next = new geoList();
@@ -541,7 +545,7 @@ float MyGLWidget::RaySphereIntersect(const vec3& P0, const vec3& V0, const Matri
 	{
 		if(t1 < 0) return t2;
 		if(t2 < 0) return t1;
-		return min(t1, t2);
+		return std::min(t1, t2);
 	}
 	//else return min(t1, t2);
 }

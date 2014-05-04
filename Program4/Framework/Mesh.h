@@ -14,7 +14,9 @@ Description: Mesh Header
 #include <string>
 #include <sstream>
 #include <fstream>
+#include "constants.h"
 #include "qstring.h"
+#include "Geometry.h"
 
 
 using glm::vec3;
@@ -23,6 +25,8 @@ using std::vector;
 using std::ifstream;
 using std::string;
 typedef glm::mat4 matrix;
+
+enum MESHTYPE {EXTRUSION = 0, SURFREV = 1};
 
 struct NewFace;
 struct Vertex
@@ -46,8 +50,9 @@ struct NewFace
 	glm::vec4 normal;
 };
 
-struct Mesh
+class Mesh : public Geometry
 {
+public:
 	NewFace *faces;
 	int faceCount;
 	int pointsInBuffer;
@@ -60,8 +65,29 @@ struct Mesh
 	unsigned int *indices;
 
 	Mesh();
+	void init();
 	Mesh(QString filename);
 	void fillBuffers();
+	void draw(Vec4 c = WHITE);
+	virtual float getHeight() {return 1;}
+	virtual vec3 getColor(){return vec3(1, 0, 1);}
+
+	void setSelected(bool s) {selected = s;}
+	MESHTYPE getMeshType() {return m;}
+
+	virtual float intersectionTest(const vec3& P, const vec3& V, const mat4& m);
+
+private:
+	bool selected;
+	MESHTYPE m;
+
+	unsigned int vertexShader;
+	unsigned int fragmentShader;
+	unsigned int shaderProgram;
+
+	unsigned int vbo, cbo, ibo, nbo;
+	unsigned int vLocation, cLocation, nLocation;
+	unsigned int u_projLocation, u_modelMatrix, u_lightLocation;
 };
 
 #endif
