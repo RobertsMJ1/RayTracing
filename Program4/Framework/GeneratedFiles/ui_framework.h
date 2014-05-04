@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'framework.ui'
 **
-** Created by: Qt User Interface Compiler version 5.2.0
+** Created by: Qt User Interface Compiler version 5.2.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -55,6 +55,7 @@ public:
     QPushButton *pushButton_11;
     QPushButton *pushButton_12;
     QPushButton *pushButton_13;
+    QPushButton *pushButton_14;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -63,7 +64,7 @@ public:
     {
         if (FrameworkClass->objectName().isEmpty())
             FrameworkClass->setObjectName(QStringLiteral("FrameworkClass"));
-        FrameworkClass->resize(755, 625);
+        FrameworkClass->resize(901, 640);
         centralWidget = new QWidget(FrameworkClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         widget = new MyGLWidget(centralWidget);
@@ -156,10 +157,13 @@ public:
         pushButton_13 = new QPushButton(centralWidget);
         pushButton_13->setObjectName(QStringLiteral("pushButton_13"));
         pushButton_13->setGeometry(QRect(670, 460, 71, 21));
+        pushButton_14 = new QPushButton(centralWidget);
+        pushButton_14->setObjectName(QStringLiteral("pushButton_14"));
+        pushButton_14->setGeometry(QRect(750, 10, 141, 171));
         FrameworkClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(FrameworkClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 755, 21));
+        menuBar->setGeometry(QRect(0, 0, 901, 21));
         FrameworkClass->setMenuBar(menuBar);
         mainToolBar = new QToolBar(FrameworkClass);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -186,6 +190,7 @@ public:
         QObject::connect(pushButton_13, SIGNAL(clicked()), widget, SLOT(transZDec()));
         QObject::connect(pushButton_8, SIGNAL(clicked()), widget, SLOT(prevGeo()));
         QObject::connect(pushButton_10, SIGNAL(clicked()), widget, SLOT(nextGeo()));
+        QObject::connect(pushButton_14, SIGNAL(clicked()), widget, SLOT(RayTrace()));
 
         QMetaObject::connectSlotsByName(FrameworkClass);
     } // setupUi
@@ -212,6 +217,7 @@ public:
         pushButton_11->setText(QApplication::translate("FrameworkClass", "-X", 0));
         pushButton_12->setText(QApplication::translate("FrameworkClass", "+Z", 0));
         pushButton_13->setText(QApplication::translate("FrameworkClass", "-Z", 0));
+        pushButton_14->setText(QApplication::translate("FrameworkClass", "RayTrace", 0));
     } // retranslateUi
 
 };

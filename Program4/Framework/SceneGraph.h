@@ -64,8 +64,11 @@ public:
 	float getScaleZ() {return scaleZ;}
 
 	void setGeometry(Geometry* b){geometry = b;}
+	Geometry* getGeometry(){return geometry;}
 
 	void setSelected(bool s) {selected = s;}
+
+	Matrix getWorld(){ return w; }
 
 	SceneGraph** getChildren() {return children;}
 #pragma endregion
@@ -83,4 +86,5 @@ private:
 	float transX, transY, transZ;
 	float rotX, rotY, rotZ;
 	float scaleX, scaleY, scaleZ;
+	Matrix w;
 };

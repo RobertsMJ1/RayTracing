@@ -74,6 +74,7 @@
   <ItemGroup>
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="Chair.cpp" />
+    <ClCompile Include="EasyBMP.cpp" />
     <ClCompile Include="filenameLine.cpp" />
     <ClCompile Include="Floor.cpp" />
     <ClCompile Include="framework.cpp" />
@@ -134,6 +135,10 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="EasyBMP.h" />
+    <ClInclude Include="EasyBMP_BMP.h" />
+    <ClInclude Include="EasyBMP_DataStructures.h" />
+    <ClInclude Include="EasyBMP_VariousBMPutilities.h" />
     <ClInclude Include="SceneGraph.h" />
     <ClInclude Include="Table.h" />
     <CustomBuild Include="FilenameLine.h">

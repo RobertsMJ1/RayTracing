@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>755</width>
-    <height>625</height>
+    <width>901</width>
+    <height>640</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -365,13 +365,26 @@
      <string>-Z</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButton_14">
+    <property name="geometry">
+     <rect>
+      <x>750</x>
+      <y>10</y>
+      <width>141</width>
+      <height>171</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>RayTrace</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>755</width>
+     <width>901</width>
      <height>21</height>
     </rect>
    </property>
@@ -411,6 +424,7 @@
     <slot>transZDec()</slot>
     <slot>prevGeo()</slot>
     <slot>nextGeo()</slot>
+    <slot>RayTrace()</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -699,5 +713,24 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButton_14</sender>
+   <signal>clicked()</signal>
+   <receiver>widget</receiver>
+   <slot>RayTrace()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>828</x>
+     <y>177</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>537</x>
+     <y>298</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
+ <slots>
+  <slot>RayTrace()</slot>
+ </slots>
 </ui>

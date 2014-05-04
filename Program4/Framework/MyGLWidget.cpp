@@ -14,6 +14,8 @@ using glm::length;
 using glm::mat3;
 using glm::determinant;
 
+#include "EasyBMP.h"
+
 
 
 MyGLWidget::MyGLWidget(QWidget* parent) : QGLWidget(parent) {
@@ -422,8 +424,12 @@ void MyGLWidget:: prevGeo() {
 	transZValue = 0;
 }
 
-vec3 MyGLWidget::rayTrace(int resX, int resY)
+vec3 MyGLWidget::rayTrace(unsigned int resX, unsigned int resY)
 {
+	BMP output;
+	output.SetSize(resX, resY);
+	output.SetBitDepth(24);
+
 	//Generate ray
 	//First, calculate m in the view plane
 	vec3 m = vec3(0,0,0) - vec3(mEyePos);
@@ -444,9 +450,9 @@ vec3 MyGLWidget::rayTrace(int resX, int resY)
 	h = h * static_cast<float>(resX)/static_cast<float>(resY);
 
 	//Now, generate each ray
-	for(int x = 0; x < resX; x++)
+	for(unsigned int x = 0; x < resX; x++)
 	{
-		for(int y = 0; y < resY; y++)
+		for(unsigned int y = 0; y < resY; y++)
 		{
 			vec3 p = m + ((2*x/static_cast<float>(resX-1))-1)*h + ((2*y/static_cast<float>(resY-1))-1)*v;
 			
@@ -454,13 +460,56 @@ vec3 MyGLWidget::rayTrace(int resX, int resY)
 
 			//So, the ray is defined to have origin of mEyePos and direction D.
 			//For each ray, cycle through all geometry and do intersection tests
+			float t = geoListRoot->geo->getGeometry()->intersectionTest(p, D, geoListRoot->geo->getWorld());
+			vec3 col(0, 0, 0);
+			for(geoList* c = geoListRoot; c->next != geoListRoot; c = c->next)
+			{
+				float r = c->geo->getGeometry()->intersectionTest(p, D, c->geo->getWorld());
+				if(r >= 0/* && r < t*/)
+				{
+					if(t == -1 || r < t)
+					{ 
+						t = r;
+						col = c->geo->getGeometry()->getColor();
+					}
+				}
+			}
 
-			
+			//Do the shadow feeler ray if the ray hits
+			if(t >= 0) {
+				//Calculate the intersection point
+				vec3 point = vec3(mEyePos) + t*D;
+				vec3 dir = vec3(lightX, lightY, lightZ) - point;
+
+				t = geoListRoot->geo->getGeometry()->intersectionTest(p, D, geoListRoot->geo->getWorld());
+				
+				for(geoList* c = geoListRoot; c->next != geoListRoot; c = c->next)
+				{
+					//if we intersect at a time in (0, 1] short-circuit and set the point to black
+					float r = c->geo->getGeometry()->intersectionTest(p, D, c->geo->getWorld());
+					if(r < 1 && r > 0.0001)
+					{
+						col = vec3(0, 0, 0);
+						break;
+					}
+				}
+			}
+			//col  = vec3(0, 1, 0);
+			//Now, draw that color at that pixel?
+			output(x, y)->Red = col.r * 255;
+			output(x, y)->Green = col.g * 255;
+			output(x, y)->Blue = col.b * 255;
 		}
 	}
 
+	output.WriteToFile("output.bmp");
 
-	return vec3(0, 0, 0);
+	return vec3(1, 0, 1);
+}
+
+void MyGLWidget::RayTrace()
+{
+	rayTrace(570, 570);
 }
 
 float MyGLWidget::RaySphereIntersect(const vec3& P0, const vec3& V0, const Matrix& T) {

@@ -62,7 +62,10 @@ public:
 	vector<unsigned int> indicesVector;
 	vector<Face*> faces;
 
-	void draw(vec4 color);
+	void draw(vec4 color = WHITE);
+	virtual vec3 getColor(){return vec3(1, 0, 1);}
+
+	virtual float intersectionTest(const vec3& P, const vec3& V, const mat4& m);
 
 private:
 

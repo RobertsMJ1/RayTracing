@@ -29,7 +29,7 @@ using std::stringstream;
 
 using glm::vec4;
 
-#define CONFIG_FILE "config2.txt"
+#define CONFIG_FILE "config.txt"
 
 #define BLACK_COLOR			vec4( 0.0, 0.0, 0.0, 1.0 )
 #define RED_COLOR			vec4( 1.0, 0.0, 0.0, 1.0 )
@@ -92,7 +92,7 @@ public:
 	*/
 	vector<Mesh*> meshVec;
 
-	vec3 rayTrace(int resX, int resY);
+	vec3 rayTrace(unsigned int resX, unsigned int resY);
 	float RaySphereIntersect(const vec3& P0, const vec3& V0, const Matrix& T);
 	float RayPolyIntersect(const vec3& P0, const vec3& V0, const vec3& p1, const vec3& p2, const vec3& p3, const Matrix& T);
 	float triangleArea(const vec3& p0, const vec3& p1, const vec3& p2);
@@ -117,6 +117,7 @@ public slots:
 	void transZDec() {transZValue--; geoListCurrent->geo->setTransZ(geoListCurrent->geo->getTransZ()-1);}
 	void nextGeo();
 	void prevGeo();
+	void RayTrace();
 
 private:
 

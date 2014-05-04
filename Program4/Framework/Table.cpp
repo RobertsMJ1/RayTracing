@@ -52,3 +52,24 @@ Matrix Table::transform(float tX, float tY, float tZ, float theta, float sX, flo
 	//modelMatrix = scaleMat;
 	return tr;
 }
+
+float Table::intersectionTest(const vec3& p, const vec3& v, const mat4& m)
+{
+	float result = -1;
+	float r = base->intersectionTest(p, v, m*world*transform(0, 2, 0, 0, 2.5, 0.1, 2.5));
+	if(r >= 0) result = r;
+
+	r = base->intersectionTest(p, v, m*world*transform(-1, 0, -1, 0, 0.5, 2, 0.5));
+	if( r >= 0 && r < result) result = r;
+
+	r = base->intersectionTest(p, v, m*world*transform(-1, 0, 1, 0, 0.5, 2, 0.5));
+	if( r >= 0 && r < result) result = r;
+
+	r = base->intersectionTest(p, v, m*world*transform(1, 0, -1, 0, 0.5, 2, 0.5));
+	if( r >= 0 && r < result) result = r;
+
+	r = base->intersectionTest(p, v, m*world*transform(1, 0, 1, 0, 0.5, 2, 0.5));
+	if( r >= 0 && r < result) result = r;
+
+	return result;
+}

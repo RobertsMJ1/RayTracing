@@ -30,16 +30,16 @@ void Chair::draw(Vec4 c)
 	base->draw(color);
 	base->setWorld(world*transform(-1, 0, -1, 0, 0.5, 2, 0.5));
 	base->draw(color);
-	base->setWorld(world*transform(-1, 0, 1, 0, 0.5, 2, 0.5));
+	base->setWorld(world*transform(-1, 0, 1, 0, 0.5, 2, 0.5));//
 	base->draw(color);
-	base->setWorld(world*transform(1, 0, -1, 0, 0.5, 2, 0.5));
+	base->setWorld(world*transform(1, 0, -1, 0, 0.5, 2, 0.5));//
 	base->draw(color);
-	base->setWorld(world*transform(1, 0, 1, 0, 0.5, 2, 0.5));
+	base->setWorld(world*transform(1, 0, 1, 0, 0.5, 2, 0.5));//
 	base->draw(color);
 	base->setWorld(world*transform(0, 2, -1.2, 0, 2.5, 2.5, 0.1));
 	base->draw(color);
 	base->setWorld(Matrix(1.0f));
-	world = Matrix(1.0f);
+	//world = Matrix(1.0f);
 }
 
 Matrix Chair::transform(float tX, float tY, float tZ, float theta, float sX, float sY, float sZ)
@@ -53,4 +53,28 @@ Matrix Chair::transform(float tX, float tY, float tZ, float theta, float sX, flo
 
 	//modelMatrix = scaleMat;
 	return tr;
+}
+
+float Chair::intersectionTest(const vec3& p, const vec3& v, const mat4& m)
+{
+	float result = -1;
+	float r = base->intersectionTest(p, v, m*world*transform(0, 2, 0, 0, 2.5, 0.1, 2.5));
+	if(r >= 0) result = r;
+
+	r = base->intersectionTest(p, v, m*world*transform(-1, 0, -1, 0, 0.5, 2, 0.5));
+	if( r >= 0 && r < result) result = r;
+
+	r = base->intersectionTest(p, v, m*world*transform(-1, 0, 1, 0, 0.5, 2, 0.5));//
+	if( r >= 0 && r < result) result = r;
+
+	r = base->intersectionTest(p, v, m*world*transform(1, 0, -1, 0, 0.5, 2, 0.5));//
+	if( r >= 0 && r < result) result = r;
+
+	r = base->intersectionTest(p, v, m*world*transform(1, 0, 1, 0, 0.5, 2, 0.5));//
+	if( r >= 0 && r < result) result = r;
+
+	r = base->intersectionTest(p, v, m*world*transform(0, 2, -1.2, 0, 2.5, 2.5, 0.1));
+	if( r >= 0 && r < result) result = r;
+
+	return result;
 }
