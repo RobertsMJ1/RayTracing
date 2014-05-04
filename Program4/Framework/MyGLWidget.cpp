@@ -148,13 +148,14 @@ void MyGLWidget::paintGL() {
 	glUniform4fv(u_lightLocation, 1, &l[0]);
 	glUniform4fv(u_eyeLocation, 1, &mEyePos[0]);
 	
-	box.setWorld(camera);
-	chair.setWorld(camera);
-	table.setWorld(camera);
-	floor.setWorld(camera);
+	//box.setWorld(camera);
+	//chair.setWorld(camera);
+	//table.setWorld(camera);
+	//floor.setWorld(camera);
 	lBox.setWorld(camera*glm::translate(glm::mat4(1.0f),vec3(lightX,lightY-2,lightZ)));
 	lBox.draw();
 	root->traverse(camera);
+	//root->traverse(Matrix(1.0f));
 	update();
 	glFlush();
 }
@@ -441,9 +442,11 @@ vec3 MyGLWidget::rayTrace(unsigned int resX, unsigned int resY)
 
 	//The angle we will use for calculating V & H
 	float halfy = 45.0f/2.0f;
+	//float halfy = (PI/4.0f)/2.0f;
 
 	//v and h vectors from
 	vec3 v = vec3(mUp) * glm::tan(halfy);
+	//vec3 v = vec3(0, 1, 0) * glm::tan(halfy);
 
 	//Suggested by boatright, rotate v 90% and scale by aspect ratio
 	vec3 h = vec3(glm::rotate(glm::mat4(1.0f), 90.0f, c) * vec4(v, 0));
@@ -454,17 +457,17 @@ vec3 MyGLWidget::rayTrace(unsigned int resX, unsigned int resY)
 	{
 		for(unsigned int y = 0; y < resY; y++)
 		{
-			vec3 p = m + ((2*x/static_cast<float>(resX-1))-1)*h + ((2*y/static_cast<float>(resY-1))-1)*v;
+			vec3 p = m + ((2.0f*x/static_cast<float>(resX-1.0f))-1.0f)*h + ((2.0f*y/static_cast<float>(resY-1.0f))-1.0f)*v;
 			
 			vec3 D = glm::normalize(p-vec3(mEyePos));
 
 			//So, the ray is defined to have origin of mEyePos and direction D.
 			//For each ray, cycle through all geometry and do intersection tests
-			float t = geoListRoot->geo->getGeometry()->intersectionTest(p, D, geoListRoot->geo->getWorld());
+			float t = geoListRoot->geo->getGeometry()->intersectionTest(vec3(mEyePos), D, camera * geoListRoot->geo->getWorld());
 			vec3 col(0, 0, 0);
 			for(geoList* c = geoListRoot; c->next != geoListRoot; c = c->next)
 			{
-				float r = c->geo->getGeometry()->intersectionTest(p, D, c->geo->getWorld());
+				float r = c->geo->getGeometry()->intersectionTest(vec3(mEyePos), D, camera * c->geo->getWorld());
 				if(r >= 0/* && r < t*/)
 				{
 					if(t == -1 || r < t)
@@ -475,25 +478,25 @@ vec3 MyGLWidget::rayTrace(unsigned int resX, unsigned int resY)
 				}
 			}
 
-			//Do the shadow feeler ray if the ray hits
-			if(t >= 0) {
-				//Calculate the intersection point
-				vec3 point = vec3(mEyePos) + t*D;
-				vec3 dir = vec3(lightX, lightY, lightZ) - point;
+			////Do the shadow feeler ray if the ray hits
+			//if(t >= 0) {
+			//	//Calculate the intersection point
+			//	vec3 point = vec3(mEyePos) + t*D;
+			//	vec3 dir = vec3(lightX, lightY, lightZ) - point;
 
-				t = geoListRoot->geo->getGeometry()->intersectionTest(p, D, geoListRoot->geo->getWorld());
-				
-				for(geoList* c = geoListRoot; c->next != geoListRoot; c = c->next)
-				{
-					//if we intersect at a time in (0, 1] short-circuit and set the point to black
-					float r = c->geo->getGeometry()->intersectionTest(p, D, c->geo->getWorld());
-					if(r < 1 && r > 0.0001)
-					{
-						col = vec3(0, 0, 0);
-						break;
-					}
-				}
-			}
+			//	t = geoListRoot->geo->getGeometry()->intersectionTest(p, D, geoListRoot->geo->getWorld());
+			//	
+			//	for(geoList* c = geoListRoot; c->next != geoListRoot; c = c->next)
+			//	{
+			//		//if we intersect at a time in (0, 1] short-circuit and set the point to black
+			//		float r = c->geo->getGeometry()->intersectionTest(p, D, c->geo->getWorld());
+			//		if(r < 1 && r > 0.0001)
+			//		{
+			//			col = vec3(0, 0, 0);
+			//			break;
+			//		}
+			//	}
+			//}
 			//col  = vec3(0, 1, 0);
 			//Now, draw that color at that pixel?
 			output(x, y)->Red = col.r * 255;

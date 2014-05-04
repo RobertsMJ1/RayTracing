@@ -7,81 +7,61 @@ Description: Mesh Header
 ***********************/
 #define __MESH_H
 
-#pragma once
-#define GLEW_STATIC
-
 #include "glew.h"
 #include "../glm/glm.hpp"
 #include "../glm/gtc/matrix_transform.hpp"
 #include <vector>
 #include <string>
 #include <sstream>
-#include "constants.h"
-#include "Geometry.h"
-using namespace std;
+#include <fstream>
+#include "qstring.h"
 
 
 using glm::vec3;
 using glm::vec4;
 using std::vector;
+using std::ifstream;
+using std::string;
 typedef glm::mat4 matrix;
 
-struct Face {
-	Face(vec3 v1, vec3 v2, vec3 v3) {vertices[0] = v1; vertices[1] = v2; vertices[2] = v3;}
-	vec3 vertices[3];
-	vec3 normal;
+struct NewFace;
+struct Vertex
+{
+	glm::vec4 position;
+	glm::vec4 normal;
+	glm::vec3 color;
+};
+struct HalfEdge
+{
+	HalfEdge(){sym = 0; next = 0; face = 0; vertex = 0;}
+	HalfEdge *sym, *next, *prev;
+	NewFace* face;
+	Vertex* vertex;
+};
+struct NewFace
+{
+	NewFace(){edge = 0; edgeCount = 0;}
+	HalfEdge* edge;
+	unsigned int edgeCount;
+	glm::vec4 normal;
 };
 
-enum MESHTYPE {EXTRUSION = 0, SURFREV = 1};
+struct Mesh
+{
+	NewFace *faces;
+	int faceCount;
+	int pointsInBuffer;
+	int pointsInIndex;
+	bool extruding;
 
-class Mesh : public Geometry {
+	glm::vec4 *points;
+	glm::vec4 *normals;
+	glm::vec3 *colors;
+	unsigned int *indices;
 
-public:
 	Mesh();
-	~Mesh();
-	void init();
-	void fileRead(string fileName);
-	float getHeight() {return 1;}
-	void calculateExtrusion(std::stringstream &s);
-	void calculateSurfRev(std::stringstream &s);
-
-	void calculateFace(vec3 v1, vec3 v2, vec3 v3);
-	void calculateFace(vec3 v1, vec3 v2, vec3 v3, vec3 v4);
-
-	void surfRevTop(int count, int slices, vector<vec3> vertices);
-	void surfRevBottom(int count, int slices, vector<vec3> vertices);
-	void surfRevBoth(int count, int slices, vector<vec3> vertices);
-	void surfRevNone(int count, int slices, vector<vec3> vertices,bool endcaps);
-
-	void setSelected(bool s) {selected = s;}
-	MESHTYPE getMeshType() {return m;}
-
-	vector<vec3> pointsVector;
-	vector<vec3> colorsVector;
-	vector<vec3> normalsVector;
-	vector<unsigned int> indicesVector;
-	vector<Face*> faces;
-
-	void draw(vec4 color = WHITE);
-	virtual vec3 getColor(){return vec3(1, 0, 1);}
-
-	virtual float intersectionTest(const vec3& P, const vec3& V, const mat4& m);
-
-private:
-
-	bool selected;
-	MESHTYPE m;
-
-
-	unsigned int vertexShader;
-	unsigned int fragmentShader;
-	unsigned int shaderProgram;
-
-	unsigned int vbo, cbo, ibo, nbo;
-	unsigned int vLocation, cLocation, nLocation;
-	unsigned int u_projLocation, u_modelMatrix, u_lightLocation;
+	Mesh(QString filename);
+	void fillBuffers();
 };
-
-
 
 #endif

@@ -233,12 +233,14 @@ float Box::intersectionTest(const vec3& P, const vec3& V, const mat4& m)
 			t1 = t2;
 			t2 = temp;
 		}
-		if(t1 > tnear) tnear = t1;
-		if(t2 < tfar) tfar = t2;
+		if(tnear < -1e25 || t1 < tnear) tnear = t1;
+		if(tfar > 1e25 || t2 < tfar) tfar = t2;
 		if(tnear > tfar) 
-			return t;
+			//return t;
+				;
 		if(tfar < 0) 
-			return t;
+			//return t;
+				;
 	}
 	//y-plane
 	if(v.y != 0)
@@ -251,12 +253,14 @@ float Box::intersectionTest(const vec3& P, const vec3& V, const mat4& m)
 			t1 = t2;
 			t2 = temp;
 		}
-		if(t1 > tnear) tnear = t1;
-		if(t2 < tfar) tfar = t2;
+		if(tnear < -1e25 || t1 < tnear) tnear = t1;
+		if(tfar > 1e25 || t2 < tfar) tfar = t2;
 		if(tnear > tfar) 
-			return t;
+			//return t;
+				;
 		if(tfar < 0) 
-			return t;
+			//return t;
+				;
 	}
 	//z-plane
 	if(v.z != 0)
@@ -269,12 +273,14 @@ float Box::intersectionTest(const vec3& P, const vec3& V, const mat4& m)
 			t1 = t2;
 			t2 = temp;
 		}
-		if(t1 > tnear) tnear = t1;
-		if(t2 < tfar) tfar = t2;
+		if(tnear < -1e25 || t1 < tnear) tnear = t1;
+		if(tfar > 1e25 || t2 < tfar) tfar = t2;
 		if(tnear > tfar)
-			return t;
+			//return t;
+				;
 		if(tfar < 0) 
-			return t;
+			//return t;
+				;
 	}
 
 	if(tnear < -1e25) return -1;

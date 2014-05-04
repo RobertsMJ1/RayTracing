@@ -62,19 +62,19 @@ float Chair::intersectionTest(const vec3& p, const vec3& v, const mat4& m)
 	if(r >= 0) result = r;
 
 	r = base->intersectionTest(p, v, m*world*transform(-1, 0, -1, 0, 0.5, 2, 0.5));
-	if( r >= 0 && r < result) result = r;
+	if(result == -1 || (r <= result && r > 0)) result = r;
 
 	r = base->intersectionTest(p, v, m*world*transform(-1, 0, 1, 0, 0.5, 2, 0.5));//
-	if( r >= 0 && r < result) result = r;
+	if(result == -1 || (r <= result && r > 0)) result = r;
 
 	r = base->intersectionTest(p, v, m*world*transform(1, 0, -1, 0, 0.5, 2, 0.5));//
-	if( r >= 0 && r < result) result = r;
+	if(result == -1 || (r <= result && r > 0)) result = r;
 
 	r = base->intersectionTest(p, v, m*world*transform(1, 0, 1, 0, 0.5, 2, 0.5));//
-	if( r >= 0 && r < result) result = r;
+	if(result == -1 || (r <= result && r > 0)) result = r;
 
 	r = base->intersectionTest(p, v, m*world*transform(0, 2, -1.2, 0, 2.5, 2.5, 0.1));
-	if( r >= 0 && r < result) result = r;
+	if(result == -1 || (r <= result && r > 0)) result = r;
 
 	return result;
 }

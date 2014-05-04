@@ -105,6 +105,7 @@
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Mesh_old.cpp" />
     <ClCompile Include="MyGLWidget.cpp" />
     <ClCompile Include="SceneGraph.cpp" />
     <ClCompile Include="Table.cpp" />
@@ -139,6 +140,7 @@
     <ClInclude Include="EasyBMP_BMP.h" />
     <ClInclude Include="EasyBMP_DataStructures.h" />
     <ClInclude Include="EasyBMP_VariousBMPutilities.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="SceneGraph.h" />
     <ClInclude Include="Table.h" />
     <CustomBuild Include="FilenameLine.h">
@@ -157,7 +159,7 @@
     <ClInclude Include="Floor.h" />
     <ClInclude Include="GeneratedFiles\ui_framework.h" />
     <ClInclude Include="Geometry.h" />
-    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Mesh_old.h" />
     <CustomBuild Include="MyGLWidget.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing MyGLWidget.h...</Message>

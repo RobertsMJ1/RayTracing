@@ -66,7 +66,7 @@ void SceneGraph::traverse(Matrix m)
 	Matrix s = glm::scale(Matrix(1.0f), Vec3(scaleX, scaleY, scaleZ));
 
 	Matrix mat = m * t * r * s;
-	w = mat;
+	w = m * t * r * s;
 	//m = s*r*t*m;
 	if(geometry != 0)
 	{

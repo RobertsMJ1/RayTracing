@@ -26,7 +26,6 @@ Description: GLWidget Header
 using std::string;
 using std::stringstream;
 
-
 using glm::vec4;
 
 #define CONFIG_FILE "config.txt"
