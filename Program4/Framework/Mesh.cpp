@@ -305,29 +305,38 @@ void Mesh::draw(Vec4 c) {
 	// Fill Vertex Buffer //
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, pointsInBuffer*sizeof(vec4), points, GL_STATIC_DRAW);
-
-
+	glEnableVertexAttribArray(vLocation);
+	glVertexAttribPointer(vLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);
 	// Fill Color Buffer //
 	vec4* bufferColor;
 	bufferColor = new vec4[pointsInBuffer];
-	for(int i=0;i<pointsInBuffer;i++) {
-		if(selected) {
-			bufferColor[i] = ORANGE;
-		}
-		else {
-			bufferColor[i] = c;
-		}
+	vec4 color = c;
+	if(color == WHITE) {
+		color = PURPLE;
 	}
+	for(int i=0;i<pointsInBuffer;i++) {
+		bufferColor[i] = color;
+	}
+
+	
 	glBindBuffer(GL_ARRAY_BUFFER, cbo);
 	glBufferData(GL_ARRAY_BUFFER, pointsInBuffer*sizeof(vec4), bufferColor, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(cLocation);
+	glVertexAttribPointer(cLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
 	// Fill Normal Buffer //
+
+	
 	glBindBuffer(GL_ARRAY_BUFFER, nbo);
 	glBufferData(GL_ARRAY_BUFFER, pointsInBuffer*sizeof(vec4), normals, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(nLocation);
+	glVertexAttribPointer(nLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
 
 	// Fill Index Buffer //
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, pointsInIndex*sizeof(unsigned int), indices, GL_STATIC_DRAW);
+	
 
 	delete bufferColor;
 

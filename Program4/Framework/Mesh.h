@@ -72,13 +72,11 @@ public:
 	virtual float getHeight() {return 1;}
 	virtual vec3 getColor(){return vec3(1, 0, 1);}
 
-	void setSelected(bool s) {selected = s;}
 	MESHTYPE getMeshType() {return m;}
 
 	virtual float intersectionTest(const vec3& P, const vec3& V, const mat4& m);
 
 private:
-	bool selected;
 	MESHTYPE m;
 
 	unsigned int vertexShader;
