@@ -68,6 +68,7 @@ public:
 	void init();
 	Mesh(QString filename);
 	void fillBuffers();
+	void subDivide();
 	void draw(Vec4 c = WHITE);
 	virtual float getHeight() {return 1;}
 	virtual vec3 getColor(){return vec3(1, 0, 1);}

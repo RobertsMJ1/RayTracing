@@ -32,6 +32,7 @@ SceneGraph::SceneGraph(Geometry* g, int x, int z)
 SceneGraph::SceneGraph(Geometry* g, int x, int z, float tx, float ty, float tz, float ry, float sx, float sy, float sz, GEOMETRYTYPE gtype)
 {
 	geometry = g;
+	mesh = dynamic_cast<Mesh*>(g);
 	width = x;
 	depth = z;
 	children = new SceneGraph* [width * depth];

@@ -378,6 +378,19 @@
      <string>RayTrace</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButton_15">
+    <property name="geometry">
+     <rect>
+      <x>750</x>
+      <y>200</y>
+      <width>141</width>
+      <height>171</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Sub-Divide</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -425,6 +438,7 @@
     <slot>prevGeo()</slot>
     <slot>nextGeo()</slot>
     <slot>RayTrace()</slot>
+    <slot>subdivide()</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -726,6 +740,22 @@
     <hint type="destinationlabel">
      <x>537</x>
      <y>298</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_15</sender>
+   <signal>clicked()</signal>
+   <receiver>widget</receiver>
+   <slot>subdivide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>835</x>
+     <y>355</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>511</x>
+     <y>316</y>
     </hint>
    </hints>
   </connection>

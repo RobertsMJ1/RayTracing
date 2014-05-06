@@ -505,3 +505,25 @@ float Mesh::intersectionTest(const vec3& P, const vec3& V, const mat4& m)
 	}
 	return result;
 }
+void Mesh::subDivide()
+{
+	HalfEdge *refEdge;
+	float x,y,z;
+	glm::vec4 summing;
+
+	for (int i = 0; i < faceCount; i++)
+	{
+		refEdge = faces[i].edge->prev;
+		for (int j = 0; j < faces[i].edgeCount; j++)
+		{
+			refEdge = refEdge->next;
+			summing = refEdge->prev->vertex->position + refEdge->sym->prev->prev->vertex->position + refEdge->next->sym->next->vertex->position + refEdge->next->vertex->position;
+			summing /= 4;
+			refEdge->vertex->position = summing;
+			refEdge->sym->prev->vertex->position = summing;
+			refEdge->next->sym->vertex->position = summing;
+			refEdge->next->sym->next->sym->vertex->position = summing;
+
+		}
+	}
+}
