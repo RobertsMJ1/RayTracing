@@ -513,7 +513,11 @@ float Mesh::intersectionTest(const vec3& P, const vec3& V, const mat4& m, vec3& 
 			if(area1 + area2 + area3 <= 1 + epsilon && area1 + area2 + area3 >= 1 - epsilon)
 			{
 				//return t;
-				if(t < result || result == -1) result = t;
+				if(t < result || result == -1) 
+				{
+					result = t;
+					normal = N;
+				}
 			}
 			//else return -1;
 		}

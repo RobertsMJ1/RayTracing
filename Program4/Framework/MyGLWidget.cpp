@@ -481,7 +481,9 @@ vec3 MyGLWidget::rayTrace(vec3 p, vec3 v, int depth)
 	vec3 normal(0, 0, 0);
 
 	//float t = geoListRoot->geo->getGeometry()->intersectionTest(p, v, camera * geoListRoot->geo->getWorld(), normal);
-	float t = -1;
+	float t = root->getGeometry()->intersectionTest(p, v, camera * root->getWorld(), normal);
+	if (t > 0) col = root->getGeometry()->getColor();
+
 	int i = 0;
 	for(geoList* c = geoListRoot; i < currentCount; i++)
 	{
@@ -507,7 +509,8 @@ vec3 MyGLWidget::rayTrace(vec3 p, vec3 v, int depth)
 	vec3 dir = vec3(lightX, lightY, lightZ) - pt;
 
 	if(t >= 0) {
-		t = -1;
+		t = root->getGeometry()->intersectionTest(p, v, camera * root->getWorld(), normal);
+		if (t > 0 && t < 1.0001) col = vec3(0,0,0);
 		i = 0;
 		for(geoList* c = geoListRoot; i < currentCount; i++)
 		{
@@ -536,12 +539,10 @@ vec3 MyGLWidget::rayTrace(vec3 p, vec3 v, int depth)
 
 	//if(depth == 3 || t < 0) return col;
 
-	vec4 rotatedV = glm::rotate(mat4(1.0f), 180.0f, normal) * vec4(v.x, v.y, v.z, 0);
-	vec3 rV(rotatedV.x, rotatedV.y, rotatedV.z);
+	//vec4 rotatedV = glm::rotate(mat4(1.0f), 180.0f, normal) * vec4(v.x, v.y, v.z, 0);
+	//vec3 rV(rotatedV.x, rotatedV.y, rotatedV.z);
 	//return rayTrace(pt, rV, depth+1) * diffuseTerm + vec3(1, 1, 1) * specTerm;
 	return col * diffuseTerm + vec3(1, 1, 1) * specTerm;
-
-
 }
 void MyGLWidget::RayTrace()
 {

@@ -56,17 +56,5 @@ float Floor::intersectionTest(const vec3& p, const vec3& v, const mat4& m, vec3&
 	float r = base->intersectionTest(p, v, m*world*transform(scaleX/2.0f, 0, scaleZ/2.0f, 0, scaleX/8.0f, scaleFactor, scaleZ/8.0f), lNormal);
 	if(r >= 0) result = r;
 
-	r = base->intersectionTest(p, v, m*world * transform(scaleX/2.0f, 0, scaleZ/2.0f - scaleX/1.5f, 0, scaleX/8.0f, 1, 0.01), lNormal);
-	if(result == -1 || (r <= result && r > 0)) result = r;
-
-	r = base->intersectionTest(p, v, m*world * transform(scaleX/2.0f, 0, scaleZ/2.0f + scaleX/1.5f, 0, scaleX/8.0f, 1, 0.01), lNormal);
-	if(result == -1 || (r <= result && r > 0)) result = r;
-
-	r = base->intersectionTest(p, v, m*world * transform(scaleX/2.0f- scaleZ/1.5f, 0, scaleZ/2.0f , 0, 0.01, 1, scaleZ/8.0f), lNormal);
-	if(result == -1 || (r <= result && r > 0)) result = r;
-
-	r = base->intersectionTest(p, v, m*world * transform(scaleX/2.0f+ scaleZ/1.5f, 0, scaleZ/2.0f , 0, 0.01, 1, scaleZ/8.0f), lNormal);
-	if(result == -1 || (r <= result && r > 0)) result = r;
-
 	return result;
 }

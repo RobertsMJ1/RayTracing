@@ -6,7 +6,7 @@ table
 1 1 1
 
 mesh
-extrusion1.dat 0
+surfrev1.dat 0
 1 1
 90
 1 1 1

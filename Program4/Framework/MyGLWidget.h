@@ -28,7 +28,7 @@ using std::stringstream;
 
 using glm::vec4;
 
-#define CONFIG_FILE "config3.txt"
+#define CONFIG_FILE "config2.txt"
 
 #define BLACK_COLOR			vec4( 0.0, 0.0, 0.0, 1.0 )
 #define RED_COLOR			vec4( 1.0, 0.0, 0.0, 1.0 )
