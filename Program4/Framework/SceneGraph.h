@@ -71,6 +71,8 @@ public:
 	Matrix getWorld(){ return w; }
 
 	SceneGraph** getChildren() {return children;}
+
+	void subdivide() {if(type==MESH) {mesh->subDivide(); mesh->fillBuffers();}}
 #pragma endregion
 
 private:

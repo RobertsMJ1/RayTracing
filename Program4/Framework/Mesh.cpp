@@ -54,7 +54,7 @@ void Mesh::init() {
 }
 Mesh::Mesh(QString filename)
 {
-	faces = new NewFace[1000];
+faces = new NewFace[10000];
 	int startFace = 0;
 	int slices;
 	float height;
@@ -77,157 +77,268 @@ Mesh::Mesh(QString filename)
 	}
 
 	reader >> count;
-	faces[startFace].edgeCount = 0;
-	faces[startFace].edge = new HalfEdge;
-	faceCount++;
-	HalfEdge *refEdge = faces[startFace].edge;
-	refEdge->face = &faces[startFace];
-
-	for(unsigned int i = 0; i < count; i++) {
-		float x, y, z;
-		if (extruding)
-		{
-			y = 0.0;
-			reader >> x >> z;
-		}
-		else
-		{
-			z = 0;
-			reader >> x >> y;
-		}
-
-		refEdge->face = &faces[startFace];
-		refEdge->vertex = new Vertex;
-		refEdge->vertex->color = glm::vec3(1,0,0);
-		refEdge->vertex->position = vec4(x,y,z,1.0f);
-		if (i < count - 1)
-		{
-			refEdge->next = new HalfEdge;
-			refEdge->next->prev = refEdge;
-			refEdge = refEdge->next;
-		}
-		else
-		{
-			refEdge->next = faces[0].edge;
-			faces[startFace].edge->prev = refEdge;
-		}
-	}
-	faces[startFace].edgeCount = count;
-
-	faces[faceCount].edge = new HalfEdge;
-	faces[faceCount].edge->face = &faces[faceCount];
-	faces[faceCount].edgeCount = 0;
-	refEdge = faces[faceCount].edge;
-
-	HalfEdge *oldRef = faces[0].edge;
-	for(unsigned int i = 0; i < count; i++) {
-
-		refEdge->face = &faces[faceCount];
-		refEdge->vertex = new Vertex;
-		refEdge->vertex->color = glm::vec3(1,0,0);
-		refEdge->vertex->position = vec4(oldRef->vertex->position.x, oldRef->vertex->position.y + height, oldRef->vertex->position.z,1.0f);
-		if (i < count - 1)
-		{
-			refEdge->next = new HalfEdge;
-			refEdge->next->prev = refEdge;
-			refEdge = refEdge->next;
-			oldRef = oldRef->next;
-		}
-		else
-		{
-			refEdge->next = faces[faceCount].edge;
-			faces[faceCount].edge->prev = refEdge;
-		}
-	}
-
-	faces[faceCount].edgeCount = count;
-	faceCount++;
-
-	HalfEdge *botRef, *topRef;
-	botRef = faces[0].edge;
-	topRef = faces[1].edge;
-	HalfEdge *find = botRef->next->next;
-
-	for(int i = 0; i < count; i++)
+	HalfEdge *refEdge;
+	if (extruding)
 	{
-		faces[faceCount].edge = new HalfEdge;
-		refEdge = faces[faceCount].edge;
-		refEdge->face = &faces[faceCount];
-
-		if (i > 0)
-		{
-			refEdge->sym = faces[faceCount-1].edge->next->next;
-			faces[faceCount-1].edge->next->next->sym = refEdge;
-		}
-
-		refEdge->vertex = new Vertex;
-		refEdge->vertex->color = glm::vec3(1,0,0);
-		refEdge->vertex->position = botRef->vertex->position;
-		refEdge->next = new HalfEdge;
-		refEdge->next->prev = refEdge;
-		refEdge = refEdge->next;
-
-		refEdge->face = &faces[faceCount];
-		refEdge->vertex = new Vertex;
-		refEdge->vertex->color = glm::vec3(1,0,0);
-		refEdge->vertex->position = botRef->next->vertex->position;
-		refEdge->sym = find;
-		find->sym = refEdge;
-		find = find->next;
-		refEdge->next = new HalfEdge;
-		refEdge->next->prev = refEdge;
-		refEdge = refEdge->next;
-
-		refEdge->face = &faces[faceCount];
-		refEdge->vertex = new Vertex;
-		refEdge->vertex->color = glm::vec3(1,0,0);
-		refEdge->vertex->position = topRef->next->vertex->position;
-		if (i == count-1)
-		{
-			refEdge->sym = faces[startFace+2].edge;
-			faces[startFace+2].edge->sym = refEdge;
-		}
-		refEdge->next = new HalfEdge;
-		refEdge->next->prev = refEdge;
-		refEdge = refEdge->next;
-
-		refEdge->face = &faces[faceCount];
-		refEdge->vertex = new Vertex;
-		refEdge->vertex->color = glm::vec3(1,0,0);
-		refEdge->vertex->position = topRef->vertex->position;
-		refEdge->next = faces[faceCount].edge;
-		refEdge->next->prev = refEdge;
-
-		topRef = topRef->next;
-		botRef = botRef->next;
-		
-		faces[faceCount].edgeCount = 4;
+		faces[startFace].edgeCount = 0;
+		faces[startFace].edge = new HalfEdge;
 		faceCount++;
+		refEdge = faces[startFace].edge;
+		refEdge->face = &faces[startFace];
 	}
+
+	if (extruding)
+	{
+		for(unsigned int i = 0; i < count; i++) {
+			float x, y, z;
+			if (extruding)
+			{
+				y = 0.0;
+				reader >> x >> z;
+			}
+			else
+			{
+				z = 0;
+				reader >> x >> y;
+			}
+
+			refEdge->face = &faces[startFace];
+			refEdge->vertex = new Vertex;
+			refEdge->vertex->color = glm::vec3(1,0,0);
+			refEdge->vertex->position = vec4(x,y,z,1.0f);
+			if (i < count - 1)
+			{
+				refEdge->next = new HalfEdge;
+				refEdge->next->prev = refEdge;
+				refEdge = refEdge->next;
+			}
+			else
+			{
+				refEdge->next = faces[0].edge;
+				faces[startFace].edge->prev = refEdge;
+			}
+		}
+		faces[startFace].edgeCount = count;
+
+		faces[faceCount].edge = new HalfEdge;
+		faces[faceCount].edge->face = &faces[faceCount];
+		faces[faceCount].edgeCount = 0;
+		refEdge = faces[faceCount].edge;
+
+		HalfEdge *oldRef = faces[0].edge;
+		for(unsigned int i = 0; i < count; i++) {
+
+			refEdge->face = &faces[faceCount];
+			refEdge->vertex = new Vertex;
+			refEdge->vertex->color = glm::vec3(1,0,0);
+			refEdge->vertex->position = vec4(oldRef->vertex->position.x, oldRef->vertex->position.y + height, oldRef->vertex->position.z,1.0f);
+			if (i < count - 1)
+			{
+				refEdge->next = new HalfEdge;
+				refEdge->next->prev = refEdge;
+				refEdge = refEdge->next;
+				oldRef = oldRef->next;
+			}
+			else
+			{
+				refEdge->next = faces[faceCount].edge;
+				faces[faceCount].edge->prev = refEdge;
+			}
+		}
+
+		faces[faceCount].edgeCount = count;
+		faceCount++;
+
+		HalfEdge *botRef, *topRef;
+		botRef = faces[0].edge;
+		topRef = faces[1].edge;
+		HalfEdge *find = botRef->next->next;
+
+		for(int i = 0; i < count; i++)
+		{
+			faces[faceCount].edge = new HalfEdge;
+			refEdge = faces[faceCount].edge;
+			refEdge->face = &faces[faceCount];
+
+			if (i > 0)
+			{
+				refEdge->sym = faces[faceCount-1].edge->next->next;
+				faces[faceCount-1].edge->next->next->sym = refEdge;
+			}
+
+			refEdge->vertex = new Vertex;
+			refEdge->vertex->color = glm::vec3(1,0,0);
+			refEdge->vertex->position = botRef->vertex->position;
+			refEdge->next = new HalfEdge;
+			refEdge->next->prev = refEdge;
+			refEdge = refEdge->next;
+
+			refEdge->face = &faces[faceCount];
+			refEdge->vertex = new Vertex;
+			refEdge->vertex->color = glm::vec3(1,0,0);
+			refEdge->vertex->position = botRef->next->vertex->position;
+			refEdge->sym = find;
+			find->sym = refEdge;
+			find = find->next;
+			refEdge->next = new HalfEdge;
+			refEdge->next->prev = refEdge;
+			refEdge = refEdge->next;
+
+			refEdge->face = &faces[faceCount];
+			refEdge->vertex = new Vertex;
+			refEdge->vertex->color = glm::vec3(1,0,0);
+			refEdge->vertex->position = topRef->next->vertex->position;
+			if (i == count-1)
+			{
+				refEdge->sym = faces[startFace+2].edge;
+				faces[startFace+2].edge->sym = refEdge;
+			}
+			refEdge->next = new HalfEdge;
+			refEdge->next->prev = refEdge;
+			refEdge = refEdge->next;
+
+			refEdge->face = &faces[faceCount];
+			refEdge->vertex = new Vertex;
+			refEdge->vertex->color = glm::vec3(1,0,0);
+			refEdge->vertex->position = topRef->vertex->position;
+			refEdge->next = faces[faceCount].edge;
+			refEdge->next->prev = refEdge;
+
+			topRef = topRef->next;
+			botRef = botRef->next;
+		
+			faces[faceCount].edgeCount = 4;
+			faceCount++;
+		}
 
 	
-	HalfEdge *temp;
-	refEdge = faces[1].edge;
-	temp = refEdge->next;
-	refEdge->next = refEdge->prev;
-	refEdge->prev = temp;
-	refEdge->sym = faces[startFace + 2].edge->next->next->next;
-	faces[startFace + 2].edge->next->next->next->sym = refEdge;
-
-	for (int i = 0; i < faces[1].edgeCount-1; i++)
-	{
-		refEdge = refEdge->next;
-		refEdge->sym = faces[startFace + 3 + i].edge->next->next->next;
-		faces[startFace + 3 + i].edge->next->next->next->sym = refEdge;
+		HalfEdge *temp;
+		refEdge = faces[1].edge;
 		temp = refEdge->next;
 		refEdge->next = refEdge->prev;
 		refEdge->prev = temp;
+		refEdge->sym = faces[startFace + 2].edge->next->next->next;
+		faces[startFace + 2].edge->next->next->next->sym = refEdge;
+
+		for (int i = 0; i < faces[1].edgeCount-1; i++)
+		{
+			refEdge = refEdge->next;
+			refEdge->sym = faces[startFace + i].edge->next->next->next;
+			faces[startFace + 3 + i].edge->next->next->next->sym = refEdge;
+			temp = refEdge->next;
+			refEdge->next = refEdge->prev;
+			refEdge->prev = temp;
+		}
+	}
+	else
+	{
+		glm::vec4 *sliver = new glm::vec4[count];
+		glm::vec4 *sliver2 = new glm::vec4[count];
+		for(unsigned int i = 0; i < count; i++) {
+			float x, y, z;
+			if (extruding)
+			{
+				y = 0.0;
+				reader >> x >> z;
+			}
+			else
+			{
+				z = 0;
+				reader >> x >> y;
+			}
+			sliver[i] = vec4(x,y,z,1.0f);
+		}
+		glm::mat4 rot = glm::rotate(glm::mat4(1.0),360.0f/slices,glm::vec3(0,1,0));
+		
+
+		for (int i = 0; i < slices; i++)
+		{
+			//glm::vec3 color((double)i/slices,.5,1-(double)i/slices);
+			glm::vec3 color(1,1,1);
+
+			for (int j = 0; j < count; j++)
+			{
+				sliver2[j] = sliver[j]*rot;
+			}
+
+			for (int j = 0; j < count-1; j++)
+			{
+				faces[faceCount].edge = new HalfEdge;
+
+				refEdge = faces[faceCount].edge;			//----
+				refEdge->vertex = new Vertex;				//|  X
+				refEdge->vertex->position = sliver[j];		//----
+				refEdge->face = &faces[faceCount];
+				refEdge->vertex->color = color;
+				if (i > 0)
+				{
+					refEdge->sym = faces[(i-1)*(count-1) + j].edge->next->next;
+					faces[(i-1)*(count-1) + j].edge->next->next->sym = refEdge;
+				}
+
+				refEdge->next = new HalfEdge;				//----
+				refEdge->next->prev = refEdge;				//|  |
+				refEdge = refEdge->next;					//-XX-
+				refEdge->vertex = new Vertex;
+				refEdge->vertex->position = sliver2[j];
+				refEdge->face = &faces[faceCount];
+				refEdge->vertex->color = color;
+				if (j > 0)
+				{
+					refEdge->sym = faces[faceCount-1].edge->next->next->next;
+					faces[faceCount-1].edge->next->next->next->sym = refEdge;
+				}
+				else
+					refEdge->sym = refEdge;
+
+				refEdge->next = new HalfEdge;				//----
+				refEdge->next->prev = refEdge;				//X  |
+				refEdge = refEdge->next;					//----
+				refEdge->vertex = new Vertex;
+				refEdge->vertex->position = sliver2[j+1];
+				refEdge->face = &faces[faceCount];
+				refEdge->vertex->color = color;
+				if (i == slices-1)
+				{
+					refEdge->sym = faces[j].edge;
+					faces[j].edge->sym = refEdge;
+				}
+
+				refEdge->next = new HalfEdge;				//-XX-
+				refEdge->next->prev = refEdge;				//|  |
+				refEdge = refEdge->next;					//----
+				refEdge->vertex = new Vertex;
+				refEdge->vertex->position = sliver[j+1];
+				refEdge->face = &faces[faceCount];
+				refEdge->vertex->color = color;
+				if (j == count-2)
+				{
+					//refEdge->sym = refEdge;
+					refEdge->sym = faces[faceCount-j].edge->prev;
+					faces[faceCount-j].edge->prev->sym = refEdge;
+				}
+
+				refEdge->next = faces[faceCount].edge;
+				faces[faceCount].edge->prev = refEdge;
+
+				faces[faceCount].edgeCount = 4;
+				faceCount++;
+			}
+			for (int j = 0; j < count; j++)
+				sliver[j] = sliver2[j];
+		}
+
+		/*faces[3].edge->vertex->color = glm::vec3(1,0,0);
+		faces[3].edge->sym->prev->vertex->color = glm::vec3(1,0,0);
+		faces[3].edge->sym->prev->sym->prev->vertex->color = glm::vec3(1,0,0);
+		faces[3].edge->next->sym->vertex->color = glm::vec3(1,0,0);*/
 	}
 }
 
 void Mesh::fillBuffers()
 {
-	faceCount--;
+	if (extruding)
+		faceCount--;
 	pointsInBuffer = 0;
 	pointsInIndex = 0;
 	for (int i = 0; i < faceCount; i++)
@@ -263,6 +374,7 @@ void Mesh::fillBuffers()
 			normal = glm::vec4(normalTemp.x,normalTemp.y,normalTemp.z,0);
 		}
 		normal = glm::normalize(normal);
+		normal *= -1;
 
 		faces[i].normal = normal;
 	}
@@ -276,7 +388,10 @@ void Mesh::fillBuffers()
 
 		glm::vec4 normal = glm::vec4(normalTemp.x,normalTemp.y,normalTemp.z,0);
 
-		refEdge->vertex->normal = refEdge->face->normal;
+		normal = refEdge->face->normal + refEdge->sym->prev->face->normal + refEdge->sym->prev->sym->prev->face->normal + refEdge->next->sym->face->normal;
+
+		refEdge->vertex->normal = normal;
+		//refEdge->vertex->normal = refEdge->face->normal;
 
 		HalfEdge *edgeP = refEdge->next;
 
@@ -286,6 +401,7 @@ void Mesh::fillBuffers()
 		buffIndex++;
 		while(edgeP != refEdge)
 		{
+			normal = edgeP->face->normal + edgeP->sym->prev->face->normal + edgeP->sym->prev->sym->prev->face->normal + edgeP->next->sym->face->normal;
 			edgeP->vertex->normal = normal;
 
 			edgeP->face = &faces[i];
@@ -318,29 +434,38 @@ void Mesh::draw(Vec4 c) {
 	// Fill Vertex Buffer //
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, pointsInBuffer*sizeof(vec4), points, GL_STATIC_DRAW);
-
-
+	glEnableVertexAttribArray(vLocation);
+	glVertexAttribPointer(vLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);
 	// Fill Color Buffer //
 	vec4* bufferColor;
 	bufferColor = new vec4[pointsInBuffer];
-	for(int i=0;i<pointsInBuffer;i++) {
-		if(selected) {
-			bufferColor[i] = ORANGE;
-		}
-		else {
-			bufferColor[i] = c;
-		}
+	vec4 color = c;
+	if(color == WHITE) {
+		color = PURPLE;
 	}
+	for(int i=0;i<pointsInBuffer;i++) {
+		bufferColor[i] = color;
+	}
+
+	
 	glBindBuffer(GL_ARRAY_BUFFER, cbo);
 	glBufferData(GL_ARRAY_BUFFER, pointsInBuffer*sizeof(vec4), bufferColor, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(cLocation);
+	glVertexAttribPointer(cLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
 	// Fill Normal Buffer //
+
+	
 	glBindBuffer(GL_ARRAY_BUFFER, nbo);
 	glBufferData(GL_ARRAY_BUFFER, pointsInBuffer*sizeof(vec4), normals, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(nLocation);
+	glVertexAttribPointer(nLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
 
 	// Fill Index Buffer //
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, pointsInIndex*sizeof(unsigned int), indices, GL_STATIC_DRAW);
+	
 
 	delete bufferColor;
 
@@ -394,4 +519,26 @@ float Mesh::intersectionTest(const vec3& P, const vec3& V, const mat4& m, vec3& 
 		}
 	}
 	return result;
+}
+void Mesh::subDivide()
+{
+	HalfEdge *refEdge;
+	float x,y,z;
+	glm::vec4 summing;
+
+	for (int i = 0; i < faceCount; i++)
+	{
+		refEdge = faces[i].edge->prev;
+		for (int j = 0; j < faces[i].edgeCount; j++)
+		{
+			refEdge = refEdge->next;
+			summing = refEdge->prev->vertex->position + refEdge->sym->prev->prev->vertex->position + refEdge->next->sym->next->vertex->position + refEdge->next->vertex->position;
+			summing /= 4;
+			refEdge->vertex->position = summing;
+			refEdge->sym->prev->vertex->position = summing;
+			refEdge->next->sym->vertex->position = summing;
+			refEdge->next->sym->next->sym->vertex->position = summing;
+
+		}
+	}
 }

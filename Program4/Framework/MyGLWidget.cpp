@@ -530,6 +530,9 @@ void MyGLWidget::RayTrace()
 {
 	GenerateRays(100, 100);
 }
+void MyGLWidget::subdivide() {
+	geoListCurrent->geo->subdivide();
+}
 
 float MyGLWidget::RaySphereIntersect(const vec3& P0, const vec3& V0, const Matrix& T) {
 	// TODO fill this in.

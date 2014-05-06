@@ -118,6 +118,7 @@ public slots:
 	void nextGeo();
 	void prevGeo();
 	void RayTrace();
+	void subdivide();
 
 private:
 

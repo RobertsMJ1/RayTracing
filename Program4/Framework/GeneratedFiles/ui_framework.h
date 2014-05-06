@@ -56,6 +56,7 @@ public:
     QPushButton *pushButton_12;
     QPushButton *pushButton_13;
     QPushButton *pushButton_14;
+    QPushButton *pushButton_15;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -160,6 +161,9 @@ public:
         pushButton_14 = new QPushButton(centralWidget);
         pushButton_14->setObjectName(QStringLiteral("pushButton_14"));
         pushButton_14->setGeometry(QRect(750, 10, 141, 171));
+        pushButton_15 = new QPushButton(centralWidget);
+        pushButton_15->setObjectName(QStringLiteral("pushButton_15"));
+        pushButton_15->setGeometry(QRect(750, 200, 141, 171));
         FrameworkClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(FrameworkClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -191,6 +195,7 @@ public:
         QObject::connect(pushButton_8, SIGNAL(clicked()), widget, SLOT(prevGeo()));
         QObject::connect(pushButton_10, SIGNAL(clicked()), widget, SLOT(nextGeo()));
         QObject::connect(pushButton_14, SIGNAL(clicked()), widget, SLOT(RayTrace()));
+        QObject::connect(pushButton_15, SIGNAL(clicked()), widget, SLOT(subdivide()));
 
         QMetaObject::connectSlotsByName(FrameworkClass);
     } // setupUi
@@ -218,6 +223,7 @@ public:
         pushButton_12->setText(QApplication::translate("FrameworkClass", "+Z", 0));
         pushButton_13->setText(QApplication::translate("FrameworkClass", "-Z", 0));
         pushButton_14->setText(QApplication::translate("FrameworkClass", "RayTrace", 0));
+        pushButton_15->setText(QApplication::translate("FrameworkClass", "Sub-Divide", 0));
     } // retranslateUi
 
 };

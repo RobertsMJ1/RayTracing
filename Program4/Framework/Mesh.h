@@ -68,17 +68,16 @@ public:
 	virtual void init();
 	Mesh(QString filename);
 	void fillBuffers();
-	virtual void draw(Vec4 c = WHITE);
+	void subDivide();
+	void draw(Vec4 c = WHITE);
 	virtual float getHeight() {return 1;}
 	virtual vec3 getColor(){return vec3(1, 0, 1);}
 
-	void setSelected(bool s) {selected = s;}
 	MESHTYPE getMeshType() {return m;}
 
 	virtual float intersectionTest(const vec3& P, const vec3& V, const mat4& m, vec3& normal);
 
 private:
-	bool selected;
 	MESHTYPE m;
 
 	unsigned int vertexShader;

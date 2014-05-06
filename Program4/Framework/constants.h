@@ -11,6 +11,7 @@
 #define ORANGE Vec4(1, 0.5, 0, 1)
 #define WHITE Vec4(1, 1, 1, 1)
 #define GREEN Vec4(0, 1, 0, 1)
+#define PURPLE Vec4(0.5,0,0.5,1)
 
 enum GEOMETRYTYPE {FURNITURE = 0, MESH = 1};
 

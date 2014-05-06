@@ -183,16 +183,17 @@ void Box::draw(Vec4 c)
 	glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(glm::vec4), points, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(vLocation);
 	glVertexAttribPointer(vLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, cbo);
+	glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(glm::vec4), colors, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(cLocation);
+	glVertexAttribPointer(cLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, nbo);
 	glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(glm::vec4), normals, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(nLocation);
 	glVertexAttribPointer(nLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, cbo);
-	glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(glm::vec4), colors, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(cLocation);
-	glVertexAttribPointer(cLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
