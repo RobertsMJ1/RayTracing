@@ -92,11 +92,7 @@ public:
 	vector<Mesh*> meshVec;
 
 	void GenerateRays(unsigned int resX, unsigned int resY);
-	vec3 rayTrace(vec3 p, vec3 v);
-	float RaySphereIntersect(const vec3& P0, const vec3& V0, const Matrix& T);
-	float RayPolyIntersect(const vec3& P0, const vec3& V0, const vec3& p1, const vec3& p2, const vec3& p3, const Matrix& T);
-	float triangleArea(const vec3& p0, const vec3& p1, const vec3& p2);
-	float RayCubeIntersect(const vec3& P0, const vec3& V0, const Matrix& T);
+	vec3 rayTrace(vec3 p, vec3 v, int depth);
 
 	void moveGeometry();
 
