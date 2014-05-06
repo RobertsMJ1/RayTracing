@@ -44,7 +44,7 @@ void Mesh::init() {
 }
 Mesh::Mesh(QString filename)
 {
-	faces = new NewFace[10000];
+faces = new NewFace[10000];
 	int startFace = 0;
 	int slices;
 	float height;
@@ -213,7 +213,7 @@ Mesh::Mesh(QString filename)
 		for (int i = 0; i < faces[1].edgeCount-1; i++)
 		{
 			refEdge = refEdge->next;
-			refEdge->sym = faces[startFace + 3 + i].edge->next->next->next;
+			refEdge->sym = faces[startFace + i].edge->next->next->next;
 			faces[startFace + 3 + i].edge->next->next->next->sym = refEdge;
 			temp = refEdge->next;
 			refEdge->next = refEdge->prev;
@@ -303,7 +303,9 @@ Mesh::Mesh(QString filename)
 				refEdge->vertex->color = color;
 				if (j == count-2)
 				{
-					refEdge->sym = refEdge;
+					//refEdge->sym = refEdge;
+					refEdge->sym = faces[faceCount-j].edge->prev;
+					faces[faceCount-j].edge->prev->sym = refEdge;
 				}
 
 				refEdge->next = faces[faceCount].edge;
