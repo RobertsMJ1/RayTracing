@@ -21,16 +21,16 @@ void Floor::init(Box* b)
 
 void Floor::draw(Vec4 color)
 {
-	base->setWorld(world*transform(scaleX/2.0f, 0, scaleZ/2.0f, 0, scaleX/8.0f, scaleFactor, scaleZ/8.0f));
+	base->setWorld(world*transform(scaleX/2.0f, 0, scaleZ/2.0f, 0, scaleX/4.0f, scaleFactor, scaleZ/4.0f));
 	
 	base->draw(GREEN);
-	base->setWorld(world * transform(scaleX/2.0f, 0, scaleZ/2.0f - scaleX/1.5f, 0, scaleX/8.0f, 1, 0.01));
+	base->setWorld(world * transform(scaleX/2.0f, 0, -scaleZ/4.0f, 0, scaleX/4.0f, 1, 0.01));
 	base->draw(GREEN);
-	base->setWorld(world * transform(scaleX/2.0f, 0, scaleZ/2.0f + scaleX/1.5f, 0, scaleX/8.0f, 1, 0.01));
+	base->setWorld(world * transform(scaleX/2.0f, 0, scaleZ/2.0f + scaleX/1.5f, 0, scaleX/4.0f, 1, 0.01));
 	base->draw(GREEN);
-	base->setWorld(world * transform(scaleX/2.0f- scaleZ/1.5f, 0, scaleZ/2.0f , 0, 0.01, 1, scaleZ/8.0f));
+	base->setWorld(world * transform(scaleX/2.0f- scaleZ/1.5f, 0, scaleZ/2.0f , 0, 0.01, 1, scaleZ/4.0f));
 	base->draw(GREEN);
-	base->setWorld(world * transform(scaleX/2.0f+ scaleZ/1.5f, 0, scaleZ/2.0f , 0, 0.01, 1, scaleZ/8.0f));
+	base->setWorld(world * transform(scaleX/2.0f+ scaleZ/1.5f, 0, scaleZ/2.0f , 0, 0.01, 1, scaleZ/4.0f));
 	base->draw(GREEN);
 
 	world = Matrix(1.0f);
