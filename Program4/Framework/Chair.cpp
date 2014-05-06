@@ -55,26 +55,51 @@ Matrix Chair::transform(float tX, float tY, float tZ, float theta, float sX, flo
 	return tr;
 }
 
-float Chair::intersectionTest(const vec3& p, const vec3& v, const mat4& m)
+float Chair::intersectionTest(const vec3& p, const vec3& v, const mat4& m, vec3& normal)
 {
 	float result = -1;
-	float r = base->intersectionTest(p, v, m*world*transform(0, 2, 0, 0, 2.5, 0.1, 2.5));
-	if(r >= 0) result = r;
+	vec3 lNormal(0,0,0);
+	float r = base->intersectionTest(p, v, m*glm::scale(Matrix(1.0f), Vec3(scaleFactor, scaleFactor, scaleFactor))*transform(0, 2, 0, 0, 2.5, 0.1, 2.5), lNormal);
+	if(r >= 0)
+	{
+		result = r;
+		normal = lNormal;
+	}
 
-	r = base->intersectionTest(p, v, m*world*transform(-1, 0, -1, 0, 0.5, 2, 0.5));
-	if(result == -1 || (r <= result && r > 0)) result = r;
+	r = base->intersectionTest(p, v, m*glm::scale(Matrix(1.0f), Vec3(scaleFactor, scaleFactor, scaleFactor))*transform(-1, 0, -1, 0, 0.5, 2, 0.5), lNormal);
+	if(result == -1 || (r <= result && r > 0)) 
+	{
+		result = r;
+		normal = lNormal;
+	}
 
-	r = base->intersectionTest(p, v, m*world*transform(-1, 0, 1, 0, 0.5, 2, 0.5));//
-	if(result == -1 || (r <= result && r > 0)) result = r;
+	r = base->intersectionTest(p, v, m*glm::scale(Matrix(1.0f), Vec3(scaleFactor, scaleFactor, scaleFactor))*transform(-1, 0, 1, 0, 0.5, 2, 0.5), lNormal);
+	if(result == -1 || (r <= result && r > 0)) 
+	{
+		result = r;
+		normal = lNormal;
+	}
 
-	r = base->intersectionTest(p, v, m*world*transform(1, 0, -1, 0, 0.5, 2, 0.5));//
-	if(result == -1 || (r <= result && r > 0)) result = r;
+	r = base->intersectionTest(p, v, m*glm::scale(Matrix(1.0f), Vec3(scaleFactor, scaleFactor, scaleFactor))*transform(1, 0, -1, 0, 0.5, 2, 0.5), lNormal);
+	if(result == -1 || (r <= result && r > 0)) 
+	{
+		result = r;
+		normal = lNormal;
+	}
 
-	r = base->intersectionTest(p, v, m*world*transform(1, 0, 1, 0, 0.5, 2, 0.5));//
-	if(result == -1 || (r <= result && r > 0)) result = r;
+	r = base->intersectionTest(p, v, m*glm::scale(Matrix(1.0f), Vec3(scaleFactor, scaleFactor, scaleFactor))*transform(1, 0, 1, 0, 0.5, 2, 0.5), lNormal);
+	if(result == -1 || (r <= result && r > 0)) 
+	{
+		result = r;
+		normal = lNormal;
+	}
 
-	r = base->intersectionTest(p, v, m*world*transform(0, 2, -1.2, 0, 2.5, 2.5, 0.1));
-	if(result == -1 || (r <= result && r > 0)) result = r;
+	r = base->intersectionTest(p, v, m*glm::scale(Matrix(1.0f), Vec3(scaleFactor, scaleFactor, scaleFactor))*transform(0, 2, -1.2, 0, 2.5, 2.5, 0.1), lNormal);
+	if(result == -1 || (r <= result && r > 0)) 
+	{
+		result = r;
+		normal = lNormal;
+	}
 
 	return result;
 }

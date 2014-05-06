@@ -207,88 +207,52 @@ void Box::draw(Vec4 c)
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 }
 
-float Box::intersectionTest(const vec3& P, const vec3& V, const mat4& m)
+float Box::intersectionTest(const vec3& P, const vec3& V, const mat4& m, vec3& normal)
 {
-	// TODO fill this in.
-	// See the documentation of this function in stubs.h.
-	float t = -1;
-	vec4 p4(P, 1);
-	vec4 v4(V, 0);
-	p4 = inverse(m) * p4;
-	v4 = inverse(m) * v4;
-	vec3 s(p4.x, p4.y, p4.z);
-	vec3 v(v4.x, v4.y, v4.z);
-
-	double tnear = -1e26;
-	double tfar = 1e26;
-
-	//x-plane
-	if(v.x != 0)
+	float result = -1;
+	for(int i=0; i<36-2; i+= 3)
 	{
-		double t1 = (-0.5-s.x) / v.x;
-		double t2 = (0.5 - s.x) / v.x;
-		if(t1 > t2)
-		{
-			double temp = t1;
-			t1 = t2;
-			t2 = temp;
-		}
-		if(tnear < -1e25 || t1 < tnear) tnear = t1;
-		if(tfar > 1e25 || t2 < tfar) tfar = t2;
-		if(tnear > tfar) 
-			//return t;
-				;
-		if(tfar < 0) 
-			//return t;
-				;
-	}
-	//y-plane
-	if(v.y != 0)
-	{
-		double t1 = (0-s.y) / v.y;
-		double t2 = (1 - s.y) / v.y;
-		if(t1 > t2)
-		{
-			double temp = t1;
-			t1 = t2;
-			t2 = temp;
-		}
-		if(tnear < -1e25 || t1 < tnear) tnear = t1;
-		if(tfar > 1e25 || t2 < tfar) tfar = t2;
-		if(tnear > tfar) 
-			//return t;
-				;
-		if(tfar < 0) 
-			//return t;
-				;
-	}
-	//z-plane
-	if(v.z != 0)
-	{
-		double t1 = (-0.5-s.z) / v.z;
-		double t2 = (0.5 - s.z) / v.z;
-		if(t1 > t2)
-		{
-			double temp = t1;
-			t1 = t2;
-			t2 = temp;
-		}
-		if(tnear < -1e25 || t1 < tnear) tnear = t1;
-		if(tfar > 1e25 || t2 < tfar) tfar = t2;
-		if(tnear > tfar)
-			//return t;
-				;
-		if(tfar < 0) 
-			//return t;
-				;
-	}
+		vec4 tp1 = points[indices[i]];
+		vec4 tp2 = points[indices[i+1]];
+		vec4 tp3 = points[indices[i+2]];
+		vec3 p1 = vec3(tp1.x, tp1.y, tp1.z);
+		vec3 p2 = vec3(tp2.x, tp2.y, tp2.z);
+		vec3 p3 = vec3(tp3.x, tp3.y, tp3.z);
+		// TODO fill this in.
+		// See the documentation of this function in stubs.h.
+		float t = 1e26;
+		vec4 p4(P, 1);
+		vec4 v4(V, 0);
+		p4 = inverse(m) * p4;
+		v4 = inverse(m) * v4;
+		vec3 s(p4.x, p4.y, p4.z);
+		vec3 v(v4.x, v4.y, v4.z);
 
-	if(tnear < -1e25) return -1;
-
-	vec3 finalpt = s + ((float)tnear * v);
-	float epsilon = 0.0001;
-	if(finalpt.x > 0.5 + epsilon || finalpt.x < -0.5 - epsilon || finalpt.y > 1 + epsilon || finalpt.y < 0 - epsilon || finalpt.z > 0.5 + epsilon || finalpt.z < -0.5 - epsilon) 
-		return -1;
-
-	return tnear;
+		vec3 N = cross(p3-p1, p2-p1);
+		N = normalize(N);
+	
+		double denominator = dot(N, v);
+		//denominator = abs(denominator);
+		float epsilon = 0.0001;
+		if(abs(denominator) >= 0)
+		{
+			t = (dot(N, p1-s))/denominator;
+			vec3 p = s + t*v;
+		
+			double area_whole = triangleArea(p1, p2, p3);
+			double area1 = triangleArea(p, p2, p3)/area_whole;
+			double area2 = triangleArea(p, p3, p1)/area_whole;
+			double area3 = triangleArea(p, p1, p2)/area_whole;
+			if(area1 + area2 + area3 <= 1 + epsilon && area1 + area2 + area3 >= 1 - epsilon)
+			{
+				//return t;
+				if(t < result || result == -1) {
+					normal = N;
+					result = t;
+				}
+			}
+			//else return -1;
+		}
+	}
+	return result;
 }

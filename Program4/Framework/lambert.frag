@@ -20,8 +20,10 @@ void main() {
 	vec3 v = normalize(fs_eye);
 	vec3 h = normalize(l+v);
 	vec3 r = -l - dot(fs_normal, -l)*fs_normal * 2.0;
+	
+	float i = pow(max(dot(h, fs_normal), 0), 128);
+
 	//float i = 0;
-	float i = pow(max(dot(v, r), 0), 16);
 	//float ndoth = dot(fs_normal, h);
 	//float i = pow(clamp(ndoth, 0, 1), 16);
 	

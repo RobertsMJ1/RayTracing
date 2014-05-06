@@ -24,7 +24,7 @@ public:
 
 	void init(Box* b);
 	virtual void draw(Vec4 color = GREEN);
-	virtual float intersectionTest(const vec3& p, const vec3& v, const mat4& m);
+	virtual float intersectionTest(const vec3& p, const vec3& v, const mat4& m, vec3& normal);
 	float getHeight(){return scaleFactor;}
 	virtual vec3 getColor(){return vec3(0, 1, 0);}
 	

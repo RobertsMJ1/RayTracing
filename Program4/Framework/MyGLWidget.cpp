@@ -140,18 +140,13 @@ void MyGLWidget::paintGL() {
 
 	camera = glm::lookAt(vec3(mEyePos.x, mEyePos.y, mEyePos.z), vec3(0, 0, 0), vec3(mUp.x, mUp.y, mUp.z));
 
-	//Vec4 l4(light, 1);
-	//l4 = camera * l4;
-	//light = Vec3(l4);
-	glm::vec4 l(lightX,lightY,lightZ, 1);
+	vec4 l(lightX,lightY,lightZ, 1);
 	l = camera * l;
+
 	glUniform4fv(u_lightLocation, 1, &l[0]);
 	glUniform4fv(u_eyeLocation, 1, &mEyePos[0]);
 	
-	//box.setWorld(camera);
-	//chair.setWorld(camera);
-	//table.setWorld(camera);
-	//floor.setWorld(camera);
+	
 	lBox.setWorld(camera*glm::translate(glm::mat4(1.0f),vec3(lightX,lightY-2,lightZ)));
 	lBox.draw();
 	root->traverse(camera);
@@ -165,7 +160,7 @@ void MyGLWidget::resizeGL(int width, int height) {
 	w = width;
 	h = height;
 	//Here's how to make matrices for transformations, check the documentation of GLM for rotation, scaling, and translation
-	glm::mat4 projection = glm::perspective(45.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 30.0f);
+	glm::mat4 projection = glm::perspective(90.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 30.0f);
 	
 	//Do something similar for u_modelMatrix before rendering things
 	glUniformMatrix4fv(u_projLocation, 1, GL_FALSE, &projection[0][0]);
@@ -429,94 +424,111 @@ void MyGLWidget:: prevGeo() {
 	transZValue = 0;
 }
 
-vec3 MyGLWidget::rayTrace(unsigned int resX, unsigned int resY)
+void MyGLWidget::GenerateRays(unsigned int resX, unsigned int resY)
 {
 	BMP output;
 	output.SetSize(resX, resY);
 	output.SetBitDepth(24);
 
-	//Generate ray
+	matrix rotX = glm::rotate(matrix(1.0f), pitchValue, vec3(1, 0, 0));
+	matrix rotY = glm::rotate(matrix(1.0f), yawValue, vec3(0, 1, 0));
+
+	mEyePos = rotY * rotX * vec4(0, 0, -zoomValue, 1);
+	mUp = rotY * rotX * vec4(0, 1, 0, 0);
+
+	//Generate rays	
+	vec3 eyePos(mEyePos.x, mEyePos.y, mEyePos.z);
+
 	//First, calculate m in the view plane
-	vec3 m = vec3(0,0,0) - vec3(mEyePos);
-	m = glm::normalize(m);
+	vec3 M = vec3(0,0,0) - eyePos;
+	M = normalize(M);
+
 
 	//c is the vector from the plane to the camera
-	vec3 c = m;
-	m += vec3(mEyePos);
+	vec3 C = M;
 
 	//The angle we will use for calculating V & H
-	float halfy = 45.0f/2.0f;
-	//float halfy = (PI/4.0f)/2.0f;
+	float phi = 90.0f/2.0f;
+	//float phi = 17.0f;
 
 	//v and h vectors from
-	vec3 v = vec3(mUp) * glm::tan(halfy);
-	//vec3 v = vec3(0, 1, 0) * glm::tan(halfy);
-
-	//Suggested by boatright, rotate v 90% and scale by aspect ratio
-	vec3 h = vec3(glm::rotate(glm::mat4(1.0f), 90.0f, c) * vec4(v, 0));
-	h = h * static_cast<float>(resX)/static_cast<float>(resY);
+	vec3 V = vec3(mUp) * glm::tan(phi);
+	V = -V;
+	vec3 H = vec3(glm::rotate(glm::mat4(1.0f), -90.0f, C) * vec4(V.x, V.y, V.z, 0));
+	H = H * (static_cast<float>(w)/static_cast<float>(h));
 
 	//Now, generate each ray
 	for(unsigned int x = 0; x < resX; x++)
 	{
 		for(unsigned int y = 0; y < resY; y++)
 		{
-			vec3 p = m + ((2.0f*x/static_cast<float>(resX-1.0f))-1.0f)*h + ((2.0f*y/static_cast<float>(resY-1.0f))-1.0f)*v;
-			
-			vec3 D = glm::normalize(p-vec3(mEyePos));
+			vec3 P = M + ((((2*x)/((float)(resX-1)))-1.0f)*H) + ((((2*y)/((float)(resY-1)))-1)*V);
+			vec3 D = normalize(P - eyePos);
 
-			//So, the ray is defined to have origin of mEyePos and direction D.
-			//For each ray, cycle through all geometry and do intersection tests
-			float t = geoListRoot->geo->getGeometry()->intersectionTest(vec3(mEyePos), D, camera * geoListRoot->geo->getWorld());
-			vec3 col(0, 0, 0);
-			for(geoList* c = geoListRoot; c->next != geoListRoot; c = c->next)
-			{
-				float r = c->geo->getGeometry()->intersectionTest(vec3(mEyePos), D, camera * c->geo->getWorld());
-				if(r >= 0/* && r < t*/)
-				{
-					if(t == -1 || r < t)
-					{ 
-						t = r;
-						col = c->geo->getGeometry()->getColor();
-					}
-				}
-			}
+			vec3 color = rayTrace(eyePos, D);
 
-			////Do the shadow feeler ray if the ray hits
-			//if(t >= 0) {
-			//	//Calculate the intersection point
-			//	vec3 point = vec3(mEyePos) + t*D;
-			//	vec3 dir = vec3(lightX, lightY, lightZ) - point;
-
-			//	t = geoListRoot->geo->getGeometry()->intersectionTest(p, D, geoListRoot->geo->getWorld());
-			//	
-			//	for(geoList* c = geoListRoot; c->next != geoListRoot; c = c->next)
-			//	{
-			//		//if we intersect at a time in (0, 1] short-circuit and set the point to black
-			//		float r = c->geo->getGeometry()->intersectionTest(p, D, c->geo->getWorld());
-			//		if(r < 1 && r > 0.0001)
-			//		{
-			//			col = vec3(0, 0, 0);
-			//			break;
-			//		}
-			//	}
-			//}
-			//col  = vec3(0, 1, 0);
-			//Now, draw that color at that pixel?
-			output(x, y)->Red = col.r * 255;
-			output(x, y)->Green = col.g * 255;
-			output(x, y)->Blue = col.b * 255;
+			output(x, y)->Red = color.r * 255;
+			output(x, y)->Green = color.g * 255;
+			output(x, y)->Blue = color.b * 255;
 		}
 	}
 
 	output.WriteToFile("output.bmp");
-
-	return vec3(1, 0, 1);
 }
+vec3 MyGLWidget::rayTrace(vec3 p, vec3 v)
+{
+	vec3 col(0, 0, 0);
+	vec3 normal(0, 0, 0);
 
+	//float t = geoListRoot->geo->getGeometry()->intersectionTest(p, v, camera * geoListRoot->geo->getWorld(), normal);
+	float t = -1;
+	int i = 0;
+	for(geoList* c = geoListRoot; i < currentCount; i++)
+	{
+		vec3 localNormal(0, 0, 0);
+		float r = c->geo->getGeometry()->intersectionTest(p, v, camera * c->geo->getWorld(), localNormal);
+		if(r >= 0.0001/* && r < t*/)
+		{
+			if(t == -1 || r < t)
+			{ 
+				t = r;
+				col = c->geo->getGeometry()->getColor();
+				vec4 temp = camera * c->geo->getWorld() * vec4(localNormal.x, localNormal.y, localNormal.z, 0);
+				normal = normalize(vec3(temp.x, temp.y, temp.z));
+			}
+		}
+		c = c->next;
+	}
+
+	////Do the shadow feeler ray if the ray hits
+	//if(t >= 0) {
+	//	//Calculate the intersection point
+	//	vec3 point = vec3(mEyePos) + t*D;
+	//	vec3 dir = vec3(lightX, lightY, lightZ) - point;
+
+	//	t = geoListRoot->geo->getGeometry()->intersectionTest(p, D, geoListRoot->geo->getWorld());
+	//	
+	//	for(geoList* c = geoListRoot; c->next != geoListRoot; c = c->next)
+	//	{
+	//		//if we intersect at a time in (0, 1] short-circuit and set the point to black
+	//		float r = c->geo->getGeometry()->intersectionTest(p, D, c->geo->getWorld());
+	//		if(r < 1 && r > 0.0001)
+	//		{
+	//			col = vec3(0, 0, 0);
+	//			break;
+	//		}
+	//	}
+	//}
+	//col  = vec3(0, 1, 0);
+	vec4 l(lightX,lightY,lightZ, 1);
+	l = camera * l;
+	vec3 lpos(l.x, l.y, l.z);
+	float diffuseTerm = std::max(dot(lpos, normal), 0.0f);
+	return col * diffuseTerm;
+}
 void MyGLWidget::RayTrace()
 {
-	rayTrace(570, 570);
+	GenerateRays(100, 100);
 }
 
 float MyGLWidget::RaySphereIntersect(const vec3& P0, const vec3& V0, const Matrix& T) {

@@ -47,7 +47,7 @@ public:
 	virtual void init() = 0;
 	virtual void draw(Vec4 color = WHITE) = 0;
 	virtual float getHeight() = 0;
-	virtual float intersectionTest(const vec3& p, const vec3& v, const mat4& m) = 0;
+	virtual float intersectionTest(const vec3& p, const vec3& v, const mat4& m, vec3& normal) = 0;
 	virtual vec3 getColor() = 0;
 
 	void setTransX(float t){transX = t;}

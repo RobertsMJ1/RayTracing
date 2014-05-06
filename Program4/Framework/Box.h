@@ -27,7 +27,7 @@ public:
 	virtual void init();
 	virtual void draw(Vec4 color = YELLOW);
 	virtual float getHeight(){return 1;}
-	virtual float intersectionTest(const vec3& p, const vec3& v, const mat4& m);
+	virtual float intersectionTest(const vec3& p, const vec3& v, const mat4& m, vec3& normal);
 	virtual vec3 getColor(){return vec3(1, 1, 0);}
 
 private:

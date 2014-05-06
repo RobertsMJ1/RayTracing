@@ -65,17 +65,17 @@ public:
 	unsigned int *indices;
 
 	Mesh();
-	void init();
+	virtual void init();
 	Mesh(QString filename);
 	void fillBuffers();
-	void draw(Vec4 c = WHITE);
+	virtual void draw(Vec4 c = WHITE);
 	virtual float getHeight() {return 1;}
 	virtual vec3 getColor(){return vec3(1, 0, 1);}
 
 	void setSelected(bool s) {selected = s;}
 	MESHTYPE getMeshType() {return m;}
 
-	virtual float intersectionTest(const vec3& P, const vec3& V, const mat4& m);
+	virtual float intersectionTest(const vec3& P, const vec3& V, const mat4& m, vec3& normal);
 
 private:
 	bool selected;

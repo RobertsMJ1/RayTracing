@@ -10,6 +10,16 @@ Half-Edge by James McKay
 Mesh::Mesh()
 {
 	this->pointsInIndex = 0;
+
+	transX = 0;
+	transY = 0;
+	transZ = 0;
+	rotX = 0;
+	rotY = 0;
+	rotZ = 0;
+	scaleX = 1;
+	scaleY = 1;
+	scaleZ = 1;
 }
 
 void Mesh::init() {
@@ -214,6 +224,7 @@ Mesh::Mesh(QString filename)
 		refEdge->prev = temp;
 	}
 }
+
 void Mesh::fillBuffers()
 {
 	faceCount--;
@@ -302,6 +313,8 @@ void Mesh::fillBuffers()
 }
 
 void Mesh::draw(Vec4 c) {
+	
+
 	// Fill Vertex Buffer //
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, pointsInBuffer*sizeof(vec4), points, GL_STATIC_DRAW);
@@ -336,7 +349,7 @@ void Mesh::draw(Vec4 c) {
 	glDrawElements(GL_TRIANGLES, pointsInIndex, GL_UNSIGNED_INT, 0);
 }
 
-float Mesh::intersectionTest(const vec3& P, const vec3& V, const mat4& m)
+float Mesh::intersectionTest(const vec3& P, const vec3& V, const mat4& m, vec3& normal)
 {
 	float result = -1;
 	for(int i=0; i<pointsInIndex-2; i+= 3)
