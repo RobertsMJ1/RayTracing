@@ -54,7 +54,7 @@ void Mesh::init() {
 }
 Mesh::Mesh(QString filename)
 {
-faces = new NewFace[10000];
+	faces = new NewFace[10000];
 	int startFace = 0;
 	int slices;
 	float height;
@@ -337,8 +337,8 @@ faces = new NewFace[10000];
 
 void Mesh::fillBuffers()
 {
-	if (extruding)
-		faceCount--;
+	//if (extruding)
+		//faceCount--;
 	pointsInBuffer = 0;
 	pointsInIndex = 0;
 	for (int i = 0; i < faceCount; i++)
@@ -375,7 +375,14 @@ void Mesh::fillBuffers()
 		}
 		normal = glm::normalize(normal);
 		normal *= -1;
-
+		if (extruding)
+		{
+			//normal *= -1;
+			if (i == 0)
+				normal = glm::vec4(0,-1,0,0);
+			else if(i == 1)
+				normal = glm::vec4(0,1,0,0);
+		}
 		faces[i].normal = normal;
 	}
 	for(int i = 0; i < faceCount; i++)
@@ -427,7 +434,6 @@ void Mesh::fillBuffers()
 		startIndex += faces[i].edgeCount;
 	}
 }
-
 void Mesh::draw(Vec4 c) {
 	
 

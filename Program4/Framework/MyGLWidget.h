@@ -28,7 +28,7 @@ using std::stringstream;
 
 using glm::vec4;
 
-#define CONFIG_FILE "config2.txt"
+#define CONFIG_FILE "config.txt"
 
 #define BLACK_COLOR			vec4( 0.0, 0.0, 0.0, 1.0 )
 #define RED_COLOR			vec4( 1.0, 0.0, 0.0, 1.0 )
@@ -77,18 +77,7 @@ public:
 	vec4 points[numVertices];
 	vec4 colors[numVertices];
 
-	void fillBuffers();
-
-	void buildProcGeometry();
-
 	void processInput(string fname);
-	/*
-	vector<vec3> pointsVector;
-	vector<vec3> colorsVector;
-	vector<vec3> normalsVector;
-	vector<unsigned int> indicesVector;
-	vector<Face*> faces;
-	*/
 	vector<Mesh*> meshVec;
 
 	void GenerateRays(unsigned int resX, unsigned int resY);
